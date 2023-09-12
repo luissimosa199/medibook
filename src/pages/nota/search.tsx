@@ -18,16 +18,16 @@ interface SearchProps {
 const Search: FunctionComponent<SearchProps> = ({ timelineData }) => {
 
     const router = useRouter();
-    const { data: session } = useSession();
+    const { status } = useSession();
 
     useEffect(() => {
-        if (!session) {
+        if (status === "unauthenticated") {
             router.push('/login')
             return
         }
       
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [session])
+    }, [status])
     
 
     return (

@@ -45,33 +45,32 @@ const CategoriesList = () => {
     }
 
     return (
-        <div className="">
-            <h2 className="text-3xl mb-4">Categorías</h2>
-            <ul className="mb-8 flex flex-wrap justify-around gap-4 px-2 overflow-hidden transition-all duration-500" style={{ height: showAll ? 'auto' : `${visibleItems * 0.35}rem` }}>
-                {
-                    (data as DataType[]).map((e, idx: number) => {
-                        let displayValue: string;
+        <div className="p-4">
+            {data?.length === 0
+                ?
+                <p>No hay categorías para mostrar</p>
+                :
+                <div>
+                    <h2 className="text-3xl mb-4">Categorías</h2>
+                    <ul className="mb-4 flex flex-wrap justify-around gap-2 px-2 overflow-hidden transition-all duration-500" style={{ height: showAll ? 'auto' : `${visibleItems * 0.35}rem` }}>
+                        {
+                            (data as DataType[]).map((e, idx: number) => {
+                                const displayValue = typeof e === 'string' ? e : e.value;
 
-                        if (typeof e === 'string') {
-                            displayValue = e;
-                        } else {
-                            displayValue = e.value;
+                                return (
+                                    <li key={idx} className={`transform transition-all duration-500 ${idx >= visibleItems && !showAll ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
+                                        <Link className="capitalize py-1 px-2 hover:underline hover:text-gray-600" href={`/nota/search?tags=${displayValue}`}>{displayValue}</Link>
+                                    </li>
+                                );
+                            })
                         }
-
-                        return (
-                            <li key={idx} className={`transform transition-all duration-500 ${idx >= visibleItems && !showAll ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
-                                <Link className="capitalize py-2 hover:opacity-75" href={`/nota/search?tags=${displayValue}`}>{displayValue}</Link>
-                            </li>
-                        )
-                    })
-                }
-
-            </ul>
-            <button onClick={() => setShowAll(!showAll)} className="focus:outline-none">
-                <svg className={`w-6 h-6 transform transition-transform duration-300 ${showAll ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"></path>
-                </svg>
-            </button>
+                    </ul>
+                    <button onClick={() => setShowAll(!showAll)} className="focus:outline-none text-gray-500 hover:text-gray-600">
+                        <svg className={`w-5 h-5 transform transition-transform duration-300 ${showAll ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                </div>}
         </div>
     )
 }

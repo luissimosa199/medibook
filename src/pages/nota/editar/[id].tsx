@@ -31,7 +31,7 @@ const Edit = () => {
     const queryClient = useQueryClient();
     const router = useRouter()
     const { id } = router.query;
-    const { data: session } = useSession();
+    const { status } = useSession();
 
     useEffect(() => {
         const fetchTimelineData = async () => {
@@ -191,13 +191,13 @@ const Edit = () => {
     };
 
     useEffect(() => {
-        if (!session) {
+        if (status === "unauthenticated") {
             router.push('/login')
             return
         }
       
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [session])
+    }, [status])
 
     return (
         <div className="container mx-auto p-4">

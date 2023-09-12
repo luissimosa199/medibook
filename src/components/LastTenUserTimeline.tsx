@@ -117,7 +117,7 @@ const LastTenUserTimeline: FunctionComponent<LastTenUserTimelineProps> = ({ user
                     ))}
                 </ul>
             ) : (
-                <p className="text-center text-gray-500 mt-4">No has realizado tu primer Timeline</p>
+                <p className="text-center text-gray-500 mt-4">No has realizado tu primera publicación</p>
             )}
         </div>
 
