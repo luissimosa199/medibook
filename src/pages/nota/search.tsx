@@ -5,7 +5,7 @@ import { TimeLineModel } from '@/db/models'
 import { TimelineFormInputs } from '@/types'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { authOptions } from '../api/auth/[...nextauth]'
@@ -20,10 +20,15 @@ const Search: FunctionComponent<SearchProps> = ({ timelineData }) => {
     const router = useRouter();
     const { data: session } = useSession();
 
-    if (!session) {
-        router.push('/login')
-        return
-    }
+    useEffect(() => {
+        if (!session) {
+            router.push('/login')
+            return
+        }
+      
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session])
+    
 
     return (
         <>

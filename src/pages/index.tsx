@@ -25,7 +25,7 @@ const Mainboard: FunctionComponent = () => {
   const [searchResult, setSearchResult] = useState<TimelineFormInputs[] | null>(null)
 
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<TimelineFormInputs[]>(
     ['timelines'],
@@ -83,12 +83,15 @@ const Mainboard: FunctionComponent = () => {
     })();
   }, [searchValue]);
 
-  if (status === 'loading') return null;
+  useEffect(() => {
+    if (!session) {
+      router.push('/login')
+      return
+    }
 
-  if (!session) {
-    router.push('/login')
-    return
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session])
+
 
   return (
     <>

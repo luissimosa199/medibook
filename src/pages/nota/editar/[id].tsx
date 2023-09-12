@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faX } from '@fortawesome/free-solid-svg-icons';
-import { getSession, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import Image from "next/image";
@@ -190,10 +190,14 @@ const Edit = () => {
         setNewImageCaptions(prevCaptions => [...prevCaptions, ...urls.map(_ => '')]);
     };
 
-    if (!session) {
-        router.push('/login')
-        return
-    }
+    useEffect(() => {
+        if (!session) {
+            router.push('/login')
+            return
+        }
+      
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session])
 
     return (
         <div className="container mx-auto p-4">
