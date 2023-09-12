@@ -1,6 +1,8 @@
 import { TimeLineModel } from "../../db/models";
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../db/dbConnect";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +12,16 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const tags = await TimeLineModel.distinct("tags");
+      const session = await getServerSession(req, res, authOptions);
+
+      if (!session || !session.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const tags = await TimeLineModel.distinct("tags", {
+        authorId: session.user.email,
+      });
+      
       res.status(200).json(tags);
     } catch (error) {
       res.status(500).json({ error: "Internal server error" });
