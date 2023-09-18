@@ -75,6 +75,16 @@ const ProfileCard = () => {
                 >
                     Cerrar Sesión
                 </button>
+                <div className="mt-4">
+                    <Link href="/videocall" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
+                        Iniciar consulta
+                    </Link>
+                </div>
+                {/* <div className="mt-4">
+                    <Link href="/usuarios" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
+                        Buscar otros usuarios
+                    </Link>
+                </div> */}
                 <div>
                     {(session as CustomSession)?.role && <AdsSwitch />}
                 </div>
