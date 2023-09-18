@@ -80,11 +80,12 @@ const ProfileCard = () => {
                         Iniciar consulta
                     </Link>
                 </div>
-                {/* <div className="mt-4">
-                    <Link href="/usuarios" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
-                        Buscar otros usuarios
+
+                <div className="mt-4">
+                    <Link href="/pacientes" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
+                        Pacientes
                     </Link>
-                </div> */}
+                </div>
                 <div>
                     {(session as CustomSession)?.role && <AdsSwitch />}
                 </div>
