@@ -38,14 +38,14 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
             });
 
             if (willDelete.isConfirmed) {
-                const response = await fetch(`/api/timeline/${_id}`, {
+                const response = await fetch(`/api/timeline/${_id}${session?.user?.name !== authorId ? "?username=" + authorId : ""}`, {
                     method: 'DELETE',
                 });
 
                 if (response.ok) {
                     const data = await response.json();
 
-                    queryClient.invalidateQueries(['timelines']);
+                    queryClient.invalidateQueries(['timelines', authorId]);
 
                     Swal.fire({
                         title: "Publicación borrada",
@@ -77,8 +77,8 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
                     timeline={timeline}
                     timelineName={mainText?.slice(0, 50) || ''}
                     timeLineUrl={timeLineUrl}
-                    message="Comparte con Doxa-Board"
-                    siteName="doxa-board"
+                    message=""
+                    siteName=""
                 />
             </Head>
             <div className="bg-white shadow-md rounded-lg py-4">
@@ -102,11 +102,11 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
                             {_id !== "newitem" && <ShareButtons url={timeLineUrl} title={`${mainText?.slice(0, 50)}`} />}
                         </div>
                         <div className="w-fit flex gap-2">
-                            {_id !== "newitem" && session?.user?.email === authorId &&
+                            {_id !== "newitem" &&
                                 <>
                                     <Link
                                         className="text-blue-500 w-6 h-6 hover:text-blue-700 transition ease-in-out duration-150"
-                                        href={`/nota/editar/${_id}`}
+                                        href={`/nota/editar/${_id}${session?.user?.name !== authorId ? "?username=" + encodeURIComponent(authorId) : ""}`}
                                     >
                                         <FontAwesomeIcon icon={faPenToSquare} size="lg" />
                                     </Link>
@@ -128,7 +128,7 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
                         />)
                     }
 
-                    {links && links.map((e: string | InputItem, idx: number) => {
+                    {links && links.length > 0 && links.map((e: string | InputItem, idx: number) => {
                         let src: string;
                         let caption: string | undefined;
 

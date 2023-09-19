@@ -94,7 +94,7 @@ const TimelineForm: FunctionComponent = () => {
 
     setSubmitBtnDisabled(true)
     const previewPhotos = createPhotoData(images, imagesCaption)
-    const previewData = createDataObject(data, previewPhotos, tagsList, session, linksList)
+    const previewData = createDataObject(data, previewPhotos, tagsList, linksList, session)
     const { previousData } = optimisticUpdate({ data: previewData, images: images });
 
     setTagsList([])
@@ -105,7 +105,7 @@ const TimelineForm: FunctionComponent = () => {
     if (imageUploadPromise) {
       const urls = await imageUploadPromise;
       const currentPhotos = createPhotoData(urls, imagesCaption)
-      const processedData = createDataObject(data, currentPhotos, tagsList, session, linksList)
+      const processedData = createDataObject(data, currentPhotos, tagsList, linksList, session)
       setImageUploadPromise(null);
 
       try {

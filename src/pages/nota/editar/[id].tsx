@@ -30,12 +30,12 @@ const Edit = () => {
 
     const queryClient = useQueryClient();
     const router = useRouter()
-    const { id } = router.query;
-    const { status } = useSession();
+    const { id, username } = router.query;
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         const fetchTimelineData = async () => {
-            const response = await fetch(`/api/timeline/${id}`);
+            const response = await fetch(`/api/timeline/${id}${session?.user?.name !== username ? "?username=" + encodeURIComponent(username as string) : ""}`);
             const timelineData = await response.json()
             setMainText(timelineData.mainText);
             setPhoto(timelineData.photo);
@@ -54,6 +54,7 @@ const Edit = () => {
         if (id) {
             fetchTimelineData();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const mutation = useMutation(
@@ -84,8 +85,8 @@ const Edit = () => {
 
                 router.push('/');
 
-                await queryClient.cancelQueries(['timelines']);
-                const previousTimelines = queryClient.getQueryData<TimelineFormInputs[]>(['timelines']);
+                await queryClient.cancelQueries(['timelines', ...(username ? [username] : [])]);
+                const previousTimelines = queryClient.getQueryData<TimelineFormInputs[]>(['timelines', ...(username ? [username] : [])]);
                 const newTimelineData: Omit<TimelineFormInputs, "createdAt"> = {
                     ...data,
                     _id: id as string,
@@ -99,27 +100,29 @@ const Edit = () => {
                     ],
                     length: data.length + urls.length,
                 };
-                queryClient.setQueryData<PaginatedQueryData<Omit<TimelineFormInputs, "createdAt">>>(['timelines'], (old) => {
-                    if (old && Array.isArray(old.pages)) {
-                        return {
-                            ...old,
-                            pages: old.pages.map((page) => {
-                                return page.map((timeline) => {
-                                    if (timeline._id === id) {
-                                        return newTimelineData;
-                                    }
-                                    return timeline;
-                                });
-                            })
-                        };
-                    } else {
-                        console.error("Unexpected data type for 'timelines'", old);
-                        return {
-                            pages: [],      // Return an empty pages array
-                            pageParams: old?.pageParams || [] // Keep the existing pageParams or default to an empty array
-                        };
-                    }
-                });
+                if (username) {
+                    queryClient.setQueryData<PaginatedQueryData<Omit<TimelineFormInputs, "createdAt">>>(['timelines', ...(username ? [username] : [])], (old) => {
+                        if (old && Array.isArray(old.pages)) {
+                            return {
+                                ...old,
+                                pages: old.pages.map((page) => {
+                                    return page.map((timeline) => {
+                                        if (timeline._id === id) {
+                                            return newTimelineData;
+                                        }
+                                        return timeline;
+                                    });
+                                })
+                            };
+                        } else {
+                            console.error("Unexpected data type for 'timelines'", old);
+                            return {
+                                pages: [],      // Return an empty pages array
+                                pageParams: old?.pageParams || [] // Keep the existing pageParams or default to an empty array
+                            };
+                        }
+                    });
+                }
 
             },
             // onError: (err, variables, context) => {
@@ -195,8 +198,8 @@ const Edit = () => {
             router.push('/login')
             return
         }
-      
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status])
 
     return (

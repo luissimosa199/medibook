@@ -1,6 +1,5 @@
 import { faCamera, faTag, faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import ProfilePicture from "./ProfilePicture"
 import { useSession } from "next-auth/react"
 import { ChangeEvent, FunctionComponent, useRef, useState } from "react"
 import FlexInputList from "./FlexInputList"
@@ -8,7 +7,6 @@ import { InputItem, TimelineFormInputs } from "@/types"
 import { useForm } from "react-hook-form"
 import Image from "next/image";
 import { createDataObject, createPhotoData, handleCaptionChange, handleDeleteImage, handleFileChange, handleNewFileChange, sendData, uploadImages } from "../utils/formHelpers";
-import useOptimisticUpdate from "@/hooks/useOptimisticUpdate"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 interface PrimaryFormProps {
@@ -45,8 +43,6 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
 
     const queryClient = useQueryClient();
 
-    const optimisticUpdate = useOptimisticUpdate(imagesCaption, tagsList, session);
-
     const mutation = useMutation(
         async ({ data, urls }: { data: Omit<TimelineFormInputs, "_id" | "createdAt">; urls: string[] }) => {
 
@@ -65,41 +61,11 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
         },
         {
             onSuccess: async (data) => {
-                const currentData = queryClient.getQueryData<{
-                    pages: TimelineFormInputs[][];
-                    pageParams: any[];
-                }>(["timelines", patientData?.pacientId]) || { pages: [], pageParams: [] };
-            
                 const response = await data.json();
-            
-                const newPayload = {
-                    ...response,
-                    photo: previews.map((image, photoIdx: number) => {
-                        const caption = imagesCaption.find((e) => e.idx === photoIdx)?.value;
-                        return {
-                            url: image,
-                            idx: photoIdx,
-                            caption: caption,
-                        };
-                    }),
-                };
-            
-                // Check if currentData.pages has at least one page
-                const firstPage = currentData.pages.length > 0 ? currentData.pages[0].slice(1) : [];
-            
-                queryClient.setQueryData<{
-                    pages: TimelineFormInputs[][];
-                    pageParams: any[];
-                }>(["timelines", patientData?.pacientId], {
-                    ...currentData,
-                    pages: [
-                        [newPayload, ...firstPage],
-                        ...currentData.pages.slice(1),
-                    ],
-                    pageParams: currentData.pageParams
-                });
+                const prevData = queryClient.getQueryData<TimelineFormInputs[]>(["timelines", patientData?.pacientId]);
+                queryClient.setQueryData(["timelines", patientData?.pacientId], [response, ...(prevData || [])]);
             },
-            
+
             onSettled: () => {
                 setPreviews([])
             }
@@ -186,7 +152,6 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
         setSubmitBtnDisabled(true);
         const previewPhotos = createPhotoData(images, imagesCaption);
         const previewData = createDataObject(data, previewPhotos, tagsList, linksList, session, patientData);
-        const { previousData } = optimisticUpdate({ data: previewData, images: images });
 
         let urls: string[] = [];
         if (imageUploadPromise) {
@@ -201,9 +166,6 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
         try {
             await mutation.mutateAsync({ data: processedData, urls: images });
         } catch (err) {
-            if (previousData) {
-                queryClient.setQueryData<{ pages: TimelineFormInputs[][], pageParams: any[] }>(["timelines", patientData?.pacientId], previousData);
-            }
             throw err;
         }
 

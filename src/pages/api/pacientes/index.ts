@@ -19,7 +19,7 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
-      const patients = await PatientModel.find({ doctor: session.user.email }).select("email name");
+      const patients = await PatientModel.find({ doctor: session.user.email }).select("email name image");
       if (!patients) {
         return res.status(404).json({ error: "No patients found" });
       }

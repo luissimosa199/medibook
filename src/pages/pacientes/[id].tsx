@@ -5,15 +5,15 @@ import escapeStringRegexp from 'escape-string-regexp';
 import React, { ChangeEvent, FunctionComponent, useState } from 'react'
 import { GetServerSidePropsContext } from 'next';
 import UserPhotos from '@/components/UserPhotos';
-import { faArrowLeft, faX } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import Image from 'next/image';
-import UserPhotoGallery from '@/components/UserPhotoGallery';
 import PhotoInput from '@/components/PhotoInput';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleFileAdding, uploadImages } from '@/utils/formHelpers';
 import PrimaryForm from '@/components/PrimaryForm';
+import PatientTimelines from '@/components/PatientTimelines';
 
 interface PatientePageProps {
     patientData?: {
@@ -31,6 +31,8 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
     const [newImages, setNewImages] = useState<string[]>([])
     const [imageUploadPromise, setImageUploadPromise] = useState<Promise<any> | null>(null);
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+
+    const [addNewTimeline, setAddNewTimeline] = useState<boolean>(false)
 
     const router = useRouter()
     const queryClient = useQueryClient();
@@ -213,21 +215,17 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
                 <div className="w-full">
                     <div className="mt-2 border-b-2 pb-3">
                         <div className="flex justify-between">
-
                             <h2 className="text-2xl font-semibold text-gray-800 ">
                                 Historias:
                             </h2>
-                            <button className="border-2 border-black px-2">
-                                +
+                            <button className={`border-2 w-10 rounded p-2 ${addNewTimeline ? "bg-gray-200" : "bg-white"} text-slate-600 transition`} onClick={(e) => { e.preventDefault(); setAddNewTimeline(!addNewTimeline) }}>
+                                <FontAwesomeIcon icon={faPlus} />
                             </button>
                         </div>
-                        {true && <PrimaryForm patientData={{ pacientId: patientData?.email as string, pacientName: patientData?.name as string }} />}
+                        {addNewTimeline && <PrimaryForm patientData={{ pacientId: patientData?.email as string, pacientName: patientData?.name as string }} />}
                     </div>
-
-
-
                     <div>
-                        timelines...
+                        <PatientTimelines username={patientData?.email as string} />
                     </div>
                 </div>
 
@@ -246,8 +244,6 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
         const safeId = escapeStringRegexp(id as string);
 
         const patient = await PatientModel.findOne({ email: new RegExp("^" + safeId) }).select("name email tlf details image").lean();
-
-        console.log("@getServerSideProps>[id]", { patient })
 
         if (patient) {
             const patientData = {

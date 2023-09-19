@@ -15,12 +15,13 @@ export default async function handler(
   }
 
   await dbConnect();
-  const id = req.query.id as string;
+  const { id, username } = req.query;
 
   if (req.method === "GET") {
+
     const timeline = await TimeLineModel.findOne({
       _id: id,
-      authorId: session.user?.email,
+      authorId: username || session.user?.email,
     });
 
     if (timeline) {
@@ -29,15 +30,16 @@ export default async function handler(
       res.status(404);
     }
   } else if (req.method === "PUT") {
+
     const body = JSON.parse(req.body);
     const timeline = await TimeLineModel.findOne({
       _id: id,
-      authorId: session.user?.email,
+      authorId: body.authorId,
     });
 
     if (timeline) {
       const updateResult = await TimeLineModel.updateMany(
-        { _id: id, authorId: session.user?.email },
+        { _id: id, authorId: body.authorId },
         { $set: body }
       ).catch((err) => {
         console.error("Update Error:", err);
@@ -46,7 +48,7 @@ export default async function handler(
 
       const updatedTimeline = await TimeLineModel.findOne({
         _id: id,
-        authorId: session.user?.email,
+        authorId: body.authorId,
       });
 
       if (updatedTimeline) {
@@ -59,7 +61,7 @@ export default async function handler(
     try {
       const timeline = await TimeLineModel.findOne({
         _id: id,
-        authorId: session.user?.email,
+        authorId: username || session.user?.email,
       });
 
       if (timeline) {

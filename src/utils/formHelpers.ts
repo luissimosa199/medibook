@@ -226,9 +226,9 @@ export const sendData = async (
   }
 };
 
-export const editData = async (data: Omit<TimelineFormInputs, "createdAt">) => {
+export const editData = async (data: Omit<TimelineFormInputs, "createdAt">, username?: string) => {
   try {
-    const response = await fetch(`/api/timeline/${data._id}`, {
+    const response = await fetch(`/api/timeline/${data._id}${username ? "?username=" + encodeURIComponent(username as string) : ""}`, {
       method: "PUT",
       body: JSON.stringify(data),
     });
