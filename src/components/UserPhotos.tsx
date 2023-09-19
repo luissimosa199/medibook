@@ -12,8 +12,10 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
 
     const { data: session} = useSession()
 
+    const patientPicture = session?.user?.email !== username
+
     const fetchUserPhotos = async () => {
-        const response = await fetch(`/api/user/photos/?username=${encodeURIComponent(username)}`, {
+        const response = await fetch(`/api/${patientPicture ? "pacientes" : "user"}/photos/?username=${encodeURIComponent(username)}`, {
             method: 'GET'
         });
         const data = await response.json()
@@ -21,7 +23,7 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
     }
 
     const deleteUserPhoto = async (photoUrl: string) => {
-        const response = await fetch(`/api/user/photos/?username=${encodeURIComponent(username)}`, {
+        const response = await fetch(`/api/${patientPicture ? "pacientes" : "user"}/photos/?username=${encodeURIComponent(username)}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

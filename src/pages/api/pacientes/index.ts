@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../db/dbConnect";
-import { PacientModel } from "@/db/models";
+import { PatientModel } from "@/db/models";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
@@ -19,12 +19,12 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
-      const users = await PacientModel.find({ doctor: session.user.email }).select("email image name");
-      if (!users) {
+      const patients = await PatientModel.find({ doctor: session.user.email }).select("email name");
+      if (!patients) {
         return res.status(404).json({ error: "No patients found" });
       }
 
-      return res.status(200).json(users);
+      return res.status(200).json(patients);
     } else {
       return res.status(405).json({ error: "Method not allowed" });
     }

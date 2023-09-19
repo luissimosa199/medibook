@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../db/dbConnect";
-import { PacientModel } from "../../../db/models"; // Adjust the path to your User model
+import { PatientModel } from "../../../db/models"; // Adjust the path to your User model
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
@@ -28,7 +28,7 @@ export default async function handler(
   await dbConnect();
 
   try {
-    const existingUser = await PacientModel.findOne({ doctor: session.user.email, email });
+    const existingUser = await PatientModel.findOne({ doctor: session.user.email, email });
     if (existingUser) {
       return res
         .status(409)
@@ -36,7 +36,7 @@ export default async function handler(
     }
 
     // Create the user
-    const user = new PacientModel({ name, email, tlf, details, doctor });
+    const user = new PatientModel({ name, email, tlf, details, doctor });
     await user.save();
 
     return res

@@ -1,6 +1,6 @@
 import { prop } from "@typegoose/typegoose";
 
-export class Pacient {
+export class Patient {
   @prop({ required: true })
   name: string;
 
@@ -12,6 +12,12 @@ export class Pacient {
 
   @prop()
   details?: string;
+
+  @prop()
+  image?: string;
+
+  @prop()
+  photos?: string[];
 
   @prop({ required: true })
   doctor: string;

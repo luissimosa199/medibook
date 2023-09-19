@@ -48,7 +48,7 @@ export default async function handler(
 
   } else if (req.method === "POST") {
 
-    const { mainText, photo, length, tags, links } =
+    const { mainText, photo, length, tags, links, authorId, authorName } =
       JSON.parse(req.body) as TimelineFormInputs;
 
     let baseSlug = generateSlug(JSON.parse(req.body), 35, 50);
@@ -67,8 +67,8 @@ export default async function handler(
       length: length,
       tags: tags,
       links: links,
-      authorId: session.user.email,
-      authorName: session.user.name,
+      authorId: authorId,
+      authorName: authorName,
       urlSlug: slug,
     });
 

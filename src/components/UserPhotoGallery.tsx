@@ -70,7 +70,6 @@ const UserPhotoGallery: FunctionComponent = () => {
         }
     };
     
-
     const handleDeleteImage = (index: number) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         const newUploadedImages = uploadedImages.filter((_, photoIndex) => photoIndex !== index);

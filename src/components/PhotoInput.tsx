@@ -16,8 +16,8 @@ const PhotoInput: FunctionComponent<PhotoInput> = ({ handleUploadImages, registe
     const isSmall = variant === "small";
     
     return (
-        <label htmlFor={id} className={`relative flex flex-col items-center justify-center p-4 border rounded hover:bg-gray-200 cursor-pointer ${isSmall ? "p-2" : ""}`}>
-            <i className={`mb-2 text-lg text-gray-500 ${isSmall ? "text-base mb-1" : ""}`}>
+        <label htmlFor={id} className={`relative text-center flex flex-col items-center justify-center p-4 border rounded hover:bg-gray-200 cursor-pointer ${isSmall ? "p-2" : ""}`}>
+            <i className={`mb-2 w-6 text-lg text-gray-500 ${isSmall ? "text-base mb-1" : ""}`}>
                 <FontAwesomeIcon icon={faUpload} />
             </i>
             {isSmall ? null : <span className="mb-2 text-lg font-semibold">{label}</span>}
