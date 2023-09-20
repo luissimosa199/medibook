@@ -148,14 +148,14 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
     };
 
     return (
-        <div className="p-8 bg-gray-50 space-y-12">
-            <div className="flex gap-2 items-center">
+        <div className="py-8 md:p-8 bg-gray-50 space-y-12">
+            <div className="flex gap-2 ml-2 items-center">
                 <Link href="/pacientes" className="w-4 h-4">
                     <FontAwesomeIcon icon={faArrowLeft} />
                 </Link>
                 <h1 className="text-4xl font-bold text-gray-800 border-b-2 pb-3">{patientData?.name}</h1>
             </div>
-            <div className="flex flex-col justify-around items-center border rounded-lg p-6 bg-white shadow-lg">
+            <div className="flex flex-col justify-around items-center border rounded-lg py-6 md:p-6 bg-white shadow-lg">
                 <div className="flex flex-col items-center relative">
                     <ProfilePicture username={patientData?.email as string} />
                     <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
@@ -205,7 +205,7 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
 
                 <div className="w-full">
                     <div className="mt-2 border-b-2 pb-3">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between px-2 md:px-0">
                             <h2 className="text-2xl font-semibold text-gray-800 ">
                                 Historias:
                             </h2>

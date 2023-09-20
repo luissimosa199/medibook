@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../db/dbConnect";
-import { UserAgentModel } from "../../db/models";
+import { PatientModel, UserAgentModel } from "../../db/models";
 import { serialize, parse } from "cookie";
 import { v4 as uuidv4 } from "uuid";
 import { UserModel } from "@/db/models/userModel";
@@ -63,6 +63,41 @@ export default async function handler(
       res.status(500).json({ error: "Failed to update userAgent" });
     }
   } else if (req.method === "GET") {
+    const { username } = req.query;
+
+    if (username) {
+      try {
+        await dbConnect();
+
+        const countResults = await UserAgentModel.aggregate([
+          {
+            $unwind: "$visit", // Flatten the array
+          },
+          {
+            $match: {
+              "visit.entry_point": new RegExp((username as string).split('@')[0] + "$"), // Match entry_point that ends with username
+            },
+          },
+          {
+            $count: "count",
+          },
+        ]);
+
+        const visitsCount = countResults.length > 0 ? countResults[0].count : 0;
+
+        const patientsCount = await PatientModel.countDocuments({
+          doctor: username,
+        });
+
+        res.status(200).json({ visitsCount, patientsCount });
+
+        return;
+      } catch (error) {
+        console.error("Error updating UserAgent:", error);
+        res.status(500).json({ error: "Failed to retrieve userAgent data" });
+      }
+    }
+
     try {
       await dbConnect();
 
@@ -76,7 +111,6 @@ export default async function handler(
         userAgentData,
         users,
       });
-      
     } catch (error) {
       console.error("Error updating UserAgent:", error);
       res.status(500).json({ error: "Failed to retrieve userAgent data" });
