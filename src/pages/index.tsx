@@ -25,10 +25,10 @@ const Mainboard: FunctionComponent = () => {
   const [searchResult, setSearchResult] = useState<TimelineFormInputs[] | null>(null)
 
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
 
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<TimelineFormInputs[]>(
-    ['timelines'],
+    ['timelines', session?.user?.email],
     ({ pageParam = 0 }) => getTimelines('timelines', pageParam),
     {
       getNextPageParam: (lastPage, allPages) => {

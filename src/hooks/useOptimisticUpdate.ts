@@ -21,12 +21,12 @@ const useOptimisticUpdate = (
   const queryClient = useQueryClient();
 
   return ({ data, images }: OptimisticUpdateParams) => {
-    queryClient.cancelQueries(["timelines"]);
+    queryClient.cancelQueries(["timelines", session?.user?.email]);
 
     const currentData = queryClient.getQueryData<{
       pages: TimelineFormInputs[][];
       pageParams: any[];
-    }>(["timelines"]);
+    }>(["timelines", session?.user?.email]);
 
     const currentPhotos: TimeLineEntryData[] = images.map(
       (image, photoIdx: number) => {
@@ -55,7 +55,7 @@ const useOptimisticUpdate = (
       queryClient.setQueryData<{
         pages: TimelineFormInputs[][];
         pageParams: any[];
-      }>(["timelines"], {
+      }>(["timelines", session?.user?.email], {
         ...currentData,
         pages: [
           [newData, ...currentData.pages[0]],

@@ -46,7 +46,7 @@ const TimelineForm: FunctionComponent = () => {
         const currentData = queryClient.getQueryData<{
           pages: TimelineFormInputs[][];
           pageParams: any[];
-        }>(["timelines"]) || { pages: [], pageParams: [] };
+        }>(["timelines", session?.user?.email]) || { pages: [], pageParams: [] };
 
         const response = await data.json()
 
@@ -65,7 +65,7 @@ const TimelineForm: FunctionComponent = () => {
         queryClient.setQueryData<{
           pages: TimelineFormInputs[][];
           pageParams: any[];
-        }>(["timelines"], {
+        }>(["timelines", session?.user?.email], {
           ...currentData,
           pages: [
             [newPayload, ...currentData.pages[0].slice(1)],
@@ -112,7 +112,7 @@ const TimelineForm: FunctionComponent = () => {
         await mutation.mutateAsync({ data: processedData, urls })
       } catch (err) {
         if (previousData) {
-          queryClient.setQueryData<{ pages: TimelineFormInputs[][], pageParams: any[] }>(['timelines'], previousData);
+          queryClient.setQueryData<{ pages: TimelineFormInputs[][], pageParams: any[] }>(["timelines", session?.user?.email], previousData);
         }
         throw err
       }
@@ -121,7 +121,7 @@ const TimelineForm: FunctionComponent = () => {
         await mutation.mutateAsync({ data: previewData, urls: [] })
       } catch (err) {
         if (previousData) {
-          queryClient.setQueryData<{ pages: TimelineFormInputs[][], pageParams: any[] }>(['timelines'], previousData);
+          queryClient.setQueryData<{ pages: TimelineFormInputs[][], pageParams: any[] }>(["timelines", session?.user?.email], previousData);
         }
         throw err
       }
