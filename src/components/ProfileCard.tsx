@@ -55,19 +55,22 @@ const ProfileCard = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row justify-around items-center border rounded-lg p-6 bg-white shadow-lg">
-            <div className="flex flex-col items-center relative">
-                <ProfilePicture username={session!.user!.email as string} />
-                <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
-                    <PhotoInput handleUploadImages={handleChangeAvatar} variant="small" id="profilepicture" />
+        <div className="flex flex-col justify-around items-center rounded-lg p-6 bg-white shadow-lg">
+            <div className="px-12">
+                <div className="flex flex-col items-center relative ">
+                    <ProfilePicture username={session!.user!.email as string} />
+                    <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
+                        <PhotoInput handleUploadImages={handleChangeAvatar} variant="small" id="profilepicture" />
+                    </div>
                 </div>
             </div>
 
-            <div className="text-center w-full">
+            <div className="text-center w-full ">
                 <p className="font-bold text-2xl mb-3">{session!.user!.name}</p>
                 <p className="italic mb-6 text-gray-600">{session!.user!.email}</p>
-
-                <ProfileButtonsPanel />
+                    <div className="mx-auto flex justify-center max-[443px]:max-w-[11rem] min-[443px]:max-w-[20.7rem] min-[616px]:max-w-[30.5rem]">
+                        <ProfileButtonsPanel />
+                    </div>
             </div>
         </div>
     )

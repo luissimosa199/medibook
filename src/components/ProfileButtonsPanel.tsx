@@ -16,21 +16,23 @@ const links = [
 
 const ProfileButtonsPanel = () => {
     return (
-        <div className="w-full flex flex-wrap p-4 gap-2 ">
-            {links.map((e, idx) => {
-                return (
-                    <div key={`${e}-${idx}`} className={` w-36 h-36 p-2 cursor-pointer ${e.color} rounded-md hover:bg-opacity-70 transition duration-300`}>
-                        <Link href={`/${e.href}`} className="text-sm text-center text-white">
-                            <div className="w-3/5 h-3/5 my-2 mx-auto flex justify-center">
-                                <FontAwesomeIcon className="h-full" icon={e.icon} />
-                            </div>
-                            <span className="">
-                                {e.name}
-                            </span>
-                        </Link>
-                    </div>
-                )
-            })}
+        <div className="w-fit max-w-[632px] mx-auto flex justify-center p-4">
+            <div className="flex flex-wrap gap-2">
+                {links.map((e, idx) => {
+                    return (
+                        <div key={`${e}-${idx}`} className={`w-36 h-36 p-2 cursor-pointer ${e.color} rounded-md hover:bg-opacity-70 transition duration-300`}>
+                            <Link href={`/${e.href}`} className="text-sm text-center text-white">
+                                <div className="w-3/5 h-3/5 my-2 mx-auto flex justify-center">
+                                    <FontAwesomeIcon className="h-full" icon={e.icon} />
+                                </div>
+                                <span>
+                                    {e.name}
+                                </span>
+                            </Link>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }
