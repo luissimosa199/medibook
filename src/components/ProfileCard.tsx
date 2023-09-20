@@ -1,12 +1,10 @@
 import React, { ChangeEvent } from 'react'
 import ProfilePicture from './ProfilePicture'
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useQueryClient } from '@tanstack/react-query'
 import { uploadImages } from '@/utils/formHelpers'
 import PhotoInput from './PhotoInput'
-import AdsSwitch from './AdsSwitch'
-import { CustomSession } from '@/pages/api/auth/[...nextauth]'
-import Link from 'next/link'
+import ProfileButtonsPanel from './ProfileButtonsPanel'
 
 const ProfileCard = () => {
 
@@ -65,23 +63,11 @@ const ProfileCard = () => {
                 </div>
             </div>
 
-            <div className="text-center">
+            <div className="text-center w-full">
                 <p className="font-bold text-2xl mb-3">{session!.user!.name}</p>
                 <p className="italic mb-6 text-gray-600">{session!.user!.email}</p>
-                <div className="mt-4">
-                    <Link href="/videocall" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
-                        Iniciar consulta
-                    </Link>
-                </div>
 
-                <div className="mt-4">
-                    <Link href="/pacientes" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
-                        Pacientes
-                    </Link>
-                </div>
-                {/* <div>
-                    {(session as CustomSession)?.role && <AdsSwitch />}
-                </div> */}
+                <ProfileButtonsPanel />
             </div>
         </div>
     )
