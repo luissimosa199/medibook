@@ -14,13 +14,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import IFrame from "./Iframe";
 import { isYtUrl, extractVideoId, extractTimestamp } from "@/utils/isYtUrl";
 import YouTubePlayer from "./YoutubePlayer";
-// import Ad from "./Ad";
 
 const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText, createdAt, tags, _id, authorId, authorName, links, urlSlug }) => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
-    const { data: session } = useSession()
+    const { data: session } = useSession();
     const queryClient = useQueryClient();
 
     const handleDeleteTimeline = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -92,8 +91,17 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
                             <p key={idx} className={mainText.length > 300 ? "text-md font-normal mb-2" : "text-xl font-semibold mb-2"}>{paragraph}</p>
                         ))}
                     </div>
-                    <p className="text-sm text-gray-600 mt-2">
-                        {tags.join(", ")}
+                    <p className="text-gray-500 mt-2 text-xs font-medium tracking-wider text-left uppercase ">
+                        {tags.map((e: string, idx: number) => {
+                            return (
+                                <>
+                                    <Link href={`/nota/search?tags=${e}`} key={idx} className="cursor-pointer hover:underline">
+                                        {e}
+                                    </Link>
+                                    {idx + 1 !== tags.length && ","}{" "}
+                                </>
+                            )
+                        })}
                     </p>
                     <p className="text-sm text-gray-500">{formatDateString(createdAt)}</p>
                     <p className="text-sm text-gray-500 capitalize">{authorName === "defaultName" ? "" : authorName}</p>

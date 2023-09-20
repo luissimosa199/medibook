@@ -144,6 +144,19 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
         toggleOpenModule("photo")
     };
 
+    const resetAll = () => {
+        setTagsList([]);
+        setLinksList([]);
+        setImages([]);
+        reset();
+        setTagInputVisibility(false);
+        setLinkInputVisibility(false);
+        setPhotoInputVisibility(false);
+        setOpenModule(false);
+        setImageUploadPromise(null);
+        setSubmitBtnDisabled(false);
+    }
+
     const onSubmit = async (data: TimelineFormInputs) => {
         if (data.mainText === '' && data.photo?.length === 0 && linksList.length === 0) {
             return;
@@ -170,11 +183,7 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
         }
 
         // Reset state only after successful submission
-        setTagsList([]);
-        setLinksList([]);
-        setImages([]);
-        reset();
-        setSubmitBtnDisabled(false);
+        resetAll()
     };
 
 
@@ -186,9 +195,10 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
             <div className={`border-t-2 p-4 bg-stone-100 ${moduleOpen() ? "min-h-48" : "h-1/3"}`}>
 
                 <div className=" flex gap-4">
-                    <div >
-                        <button className="h-8" onClick={handleInputActivation}>
+                    <div className="" >
+                        <button className="h-10 flex flex-col justify-center items-center" onClick={handleInputActivation}>
                             <FontAwesomeIcon className="h-full text-blue-600 cursor-pointer hover:text-blue-500 transition-all" icon={faCamera} />
+                            <span className="bg-gray-50 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">imagenes</span>
                         </button>
                         <input
                             accept="image/png, image/jpeg, video/mp4"
@@ -202,25 +212,28 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
                         />
 
                     </div>
-                    <div  >
-                        <button className="h-8 " onClick={(e) => { e.preventDefault(); toggleOpenModule("tags") }}>
+                    <div className=" flex gap-4" >
+                        <button className="h-10  flex flex-col justify-center items-center" onClick={(e) => { e.preventDefault(); toggleOpenModule("tags") }}>
                             <FontAwesomeIcon className={`h-full cursor-pointer hover:text-blue-500 transition-all ${tagInputVisibility ? "text-blue-900" : "text-blue-600"} `} icon={faTag} />
+                            <span className="bg-gray-50 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">categorias</span>
                         </button>
                     </div>
-                    <div  >
-                        <button className="h-8 " onClick={(e) => { e.preventDefault(); toggleOpenModule("links") }}>
+                    <div className=" flex gap-4" >
+                        <button className="h-10 flex flex-col justify-center items-center" onClick={(e) => { e.preventDefault(); toggleOpenModule("links") }}>
                             <FontAwesomeIcon className="h-full text-blue-600 cursor-pointer hover:text-blue-500 transition-all " icon={faLink} />
+                            <span className="bg-gray-50 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">enlaces</span>
                         </button>
                     </div>
 
                     <div className="ml-auto mr-4" >
-                        <button className="h-8 " disabled={submitBtnDisabled} type="submit">
+                        <button className="h-10  flex flex-col justify-center items-center" disabled={submitBtnDisabled} type="submit">
                             <FontAwesomeIcon className="h-full text-blue-600 cursor-pointer hover:text-blue-500 transition-all " icon={faPaperPlane} />
+                            <span className="bg-gray-50 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">enviar</span>
                         </button>
                     </div>
                 </div>
 
-                {openModule && <div className={`min-h-24 mt-2`}>
+                {openModule && <div className={`min-h-24 mt-4`}>
 
                     {linkInputVisibility && <FlexInputList inputList={linksList} setInputList={setLinksList} placeholder="Agrega un link y presiona Enter" type="link" showState={true} />}
 

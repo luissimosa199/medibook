@@ -88,8 +88,9 @@ const InputList: FunctionComponent<InputListProps> = ({ inputList, setInputList,
         const filteredSuggestions = suggestions.filter(e => e.startsWith(inputText));
 
         if (event.key === "Enter") {
+            event.preventDefault();
+            event.stopPropagation();
             if (highlightedIndex !== null && highlightedIndex < filteredSuggestions.length) {
-                event.preventDefault(); // Prevent any default form action
                 addInput(filteredSuggestions[highlightedIndex]);
             } else {
                 addInput();
