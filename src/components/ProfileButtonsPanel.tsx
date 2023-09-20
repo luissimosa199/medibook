@@ -1,7 +1,7 @@
-import { faChartBar, faDollarSign, faLifeRing, faStethoscope, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons'
+import { IconDefinition, faChartBar, faDollarSign, faLifeRing, faStethoscope, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 
 const links = [
     { icon: faStethoscope, href: "videocall", name: "Iniciar consulta", color: 'bg-sky-400' },
@@ -10,14 +10,23 @@ const links = [
     { icon: faVideo, href: "pacientes", name: "Videollamadas", color: 'bg-violet-400' },
     { icon: faDollarSign, href: "promo", name: "Promoción", color: 'bg-green-400' },
     { icon: faChartBar, href: "estadisticas", name: "Ver estadísticas", color: 'bg-teal-400' },
-
 ]
 
-const ProfileButtonsPanel = () => {
+interface ProfileButtonsPanelProps {
+    buttons: {
+        icon: IconDefinition;
+        href: string;
+        name: string;
+        color: string;
+    }[]
+}
+
+
+const ProfileButtonsPanel: FunctionComponent<ProfileButtonsPanelProps> = ({ buttons }) => {
     return (
         <div className="w-fit max-w-[632px] mx-auto flex justify-center p-4">
             <div className="flex flex-wrap gap-2">
-                {links.map((e, idx) => {
+                {buttons.map((e, idx) => {
                     return (
                         <div key={`${e}-${idx}`} className={`w-36 h-36 p-2 cursor-pointer ${e.color} rounded-md hover:bg-opacity-70 transition duration-300`}>
                             <Link href={`/${e.href}`} className="text-sm text-center text-white border border-transparent">

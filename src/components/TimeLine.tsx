@@ -173,8 +173,6 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
                             </div>
                         );
                     })}
-
-
                 </div>
             </div>
         </div>

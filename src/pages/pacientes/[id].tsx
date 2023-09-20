@@ -38,13 +38,10 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
 
     const uploadPhotosMutation = useMutation((photos: string[]) => uploadUserPhotos(photos, patientData?.email as string), {
         onMutate: (newPhotos: string[]) => {
-
             const previousData = queryClient.getQueryData<string[]>(['patientPhotos', patientData?.email ]);
-
             queryClient.setQueryData<string[]>(['patientPhotos', patientData?.email ], (oldData = []) => {
                 return [...oldData, ...newPhotos];
             });
-
             return { previousData };
         },
         onSuccess: () => {
