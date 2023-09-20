@@ -13,8 +13,8 @@ const CategoriesList = () => {
     const { data, isLoading, error } = useQuery<string[] | Error>({
         queryFn: fetchCategories,
         queryKey: ['categories'],
-        staleTime: 1000 * 60 * 30,
-        cacheTime: 1000 * 60 * 30,
+        staleTime: 1000 * 60 * 2,
+        cacheTime: 1000 * 60 * 2,
         keepPreviousData: true,
     })
 

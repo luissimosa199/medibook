@@ -68,13 +68,6 @@ const ProfileCard = () => {
             <div className="text-center">
                 <p className="font-bold text-2xl mb-3">{session!.user!.name}</p>
                 <p className="italic mb-6 text-gray-600">{session!.user!.email}</p>
-                <button
-                    type="button"
-                    onClick={() => signOut()}
-                    className="text-sm bg-red-500 text-white py-2 px-5 rounded-md hover:bg-red-600 transition duration-300"
-                >
-                    Cerrar Sesión
-                </button>
                 <div className="mt-4">
                     <Link href="/videocall" className="text-sm bg-blue-500 text-white py-2 px-5 rounded-md hover:bg-blue-600 transition duration-300">
                         Iniciar consulta
@@ -86,9 +79,9 @@ const ProfileCard = () => {
                         Pacientes
                     </Link>
                 </div>
-                <div>
+                {/* <div>
                     {(session as CustomSession)?.role && <AdsSwitch />}
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleFileAdding, uploadImages } from '@/utils/formHelpers';
 import PrimaryForm from '@/components/PrimaryForm';
 import PatientTimelines from '@/components/PatientTimelines';
+import ProfilePicture from '@/components/ProfilePicture';
 
 interface PatientePageProps {
     patientData?: {
@@ -105,10 +106,9 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
             if (!response.ok) {
                 const data = await response.json();
                 throw new Error(data.error || `Server responded with ${response.status}`);
-            } else {
-                alert("foto subida exitosamente")
             }
 
+            return
 
         } catch (error) {
             console.error("Error updating avatar:", error);
@@ -159,14 +159,7 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
             </div>
             <div className="flex flex-col justify-around items-center border rounded-lg p-6 bg-white shadow-lg">
                 <div className="flex flex-col items-center relative">
-                    <Image
-                        priority
-                        src={(patientData?.image as string) || '/noprofile.png'}
-                        width={128}
-                        height={128}
-                        alt={`${patientData?.name}'s Avatar`}
-                        className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-5"
-                    />
+                    <ProfilePicture username={patientData?.email as string} />
                     <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
                         <PhotoInput handleUploadImages={handleChangeAvatar} variant="small" id="profilepicture" />
                     </div>

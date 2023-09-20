@@ -1,4 +1,4 @@
-import { TimeLineModel } from "../../db/models";
+import { PatientModel, TimeLineModel } from "../../db/models";
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../db/dbConnect";
 import { getServerSession } from "next-auth";
@@ -17,9 +17,11 @@ export default async function handler(
       if (!session || !session.user) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-
+      
+      const patients = await PatientModel.find({ doctor: session.user.email }).select("email")
+      
       const tags = await TimeLineModel.distinct("tags", {
-        authorId: session.user.email,
+        authorId: { $in: [ ...(patients.map(e => e.email)), session.user.email] },
       });
       
       res.status(200).json(tags);

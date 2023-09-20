@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { FunctionComponent } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 
 interface ProfilePictureProps {
     username: string;
@@ -8,8 +9,10 @@ interface ProfilePictureProps {
 
 const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({ username }) => {
 
+    const { data: session } = useSession()
+
     const fetchProfilePicture = async () => {
-        const response = await fetch(`/api/user/avatar/?username=${encodeURIComponent(username as string)}`)
+        const response = await fetch(`/api/${ session?.user?.email === username ? "user" : "pacientes" }/avatar/?username=${encodeURIComponent(username as string)}`)
         const data = response.json()
         return data
     }
