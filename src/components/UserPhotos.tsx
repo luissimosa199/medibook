@@ -5,10 +5,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface UserPhotosProps {
     username: string;
-    direction?: "flex-col" | "flex-row"
+    direction?: "flex-col" | "flex-row",
+    queryKey?: string[]
 }
 
-const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = "flex-row" }) => {
+const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = "flex-row", queryKey = [username, 'userPhotos'] }) => {
 
     const { data: session} = useSession()
 
@@ -35,28 +36,28 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
     }
 
     const handleDelete = (e: string): void => {
-        queryClient.cancelQueries([username, 'userPhotos'])
+        queryClient.cancelQueries(queryKey)
         mutation.mutate(e)
     }
 
     const queryClient = useQueryClient()
-    const { data, isLoading, isError } = useQuery([username, 'userPhotos'], fetchUserPhotos)
+    const { data, isLoading, isError } = useQuery(queryKey, fetchUserPhotos)
 
     const mutation = useMutation(async (photoUrl: string) => {
         return deleteUserPhoto(photoUrl)
     },
         {
             onMutate: (photoUrl: string) => {
-                const previousData = queryClient.getQueryData<string[]>([username, 'userPhotos']);
+                const previousData = queryClient.getQueryData<string[]>(queryKey);
                 if (previousData) {
-                    queryClient.setQueryData([username, 'userPhotos'], (oldData = []) => {
+                    queryClient.setQueryData(queryKey, (oldData = []) => {
                         return (oldData as string[]).filter((photo: string) => photo !== photoUrl);
                     });
                 }
                 return { previousData };
             },
-            onError: (err, photoUrl, context: any) => {
-                queryClient.setQueryData([username, 'userPhotos'], context.previousData);
+            onError: (err: any, photoUrl: string, context: any) => {
+                queryClient.setQueryData(queryKey, context.previousData);
             },
         }
 
@@ -106,7 +107,7 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
                         return (
                             <div key={e} className="relative inline-block w-fit flex-shrink-0">
 
-                                {session?.user?.email === username && <button
+                                {session && <button
                                     onClick={() => { handleDelete(e) }}
                                     className="w-6 h-6 flex justify-center items-center md:h-8 md:w-8 absolute top-0 right-0 bg-gray-300 text-gray-700 p-1 rounded-full hover:bg-gray-400 transition duration-300 z-10"
                                 >

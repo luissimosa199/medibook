@@ -43,11 +43,7 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({ timeline, length, mainText
 
                 if (response.ok) {
                     const data = await response.json();
-
                     const prevData = queryClient.getQueryData(["timelines", authorId])
-
-                    console.log("@onSubmit", { prevData })
-
                     queryClient.invalidateQueries(["timelines", authorId]);
 
                     Swal.fire({

@@ -31,11 +31,11 @@ const Mainboard: FunctionComponent = () => {
     ['timelines', session?.user?.email],
     ({ pageParam = 0 }) => getTimelines('timelines', pageParam),
     {
-      getNextPageParam: (lastPage, allPages) => {
+      getNextPageParam: (lastPage: [], allPages: []) => {
         if (lastPage.length === 0) return undefined;
         return allPages.length;
       },
-    }
+    } as any
   );
 
   const debouncedHandleSearchBar = debounce((value: string) => {
@@ -130,7 +130,7 @@ const Mainboard: FunctionComponent = () => {
           <p className="text-center text-lg font-bold mt-4">No hay resultados</p>
         ) : (
           <>
-            {data?.pages.map((page) =>
+            {data?.pages.map((page: TimelineFormInputs[]) =>
               page.map((e) => (
                 <div key={e._id}>
                   <TimeLine

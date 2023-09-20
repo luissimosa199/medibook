@@ -41,7 +41,7 @@ const TimelineForm: FunctionComponent = () => {
       return sendData(payload);
     },
     {
-      onSuccess: async (data) => {
+      onSuccess: async (data: Response) => {
 
         const currentData = queryClient.getQueryData<{
           pages: TimelineFormInputs[][];

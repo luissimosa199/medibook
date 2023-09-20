@@ -32,18 +32,19 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
     const [newImages, setNewImages] = useState<string[]>([])
     const [imageUploadPromise, setImageUploadPromise] = useState<Promise<any> | null>(null);
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-
     const [addNewTimeline, setAddNewTimeline] = useState<boolean>(false)
 
-    const router = useRouter()
     const queryClient = useQueryClient();
 
     const uploadPhotosMutation = useMutation((photos: string[]) => uploadUserPhotos(photos, patientData?.email as string), {
         onMutate: (newPhotos: string[]) => {
-            const previousData = queryClient.getQueryData<string[]>([patientData?.email, 'patientPhotos']);
-            queryClient.setQueryData<string[]>([patientData?.email, 'patientPhotos',], (oldData = []) => {
+
+            const previousData = queryClient.getQueryData<string[]>(['patientPhotos', patientData?.email ]);
+
+            queryClient.setQueryData<string[]>(['patientPhotos', patientData?.email ], (oldData = []) => {
                 return [...oldData, ...newPhotos];
             });
+
             return { previousData };
         },
         onSuccess: () => {
@@ -51,7 +52,7 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
             setUploadedImages([]);
             setImageUploadPromise(null)
         },
-        onError: (_, __, context: any) => {
+        onError: (_: any, __: any, context: any) => {
             queryClient.setQueryData(['patientPhotos', patientData?.email], context.previousData);
         }
     });
@@ -133,7 +134,7 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
     };
 
     const handleSubmit = async () => {
-        queryClient.cancelQueries([patientData?.email, 'userPhotos'])
+        queryClient.cancelQueries(['patientPhotos', patientData?.email])
 
         const uploadedUrls = await imageUploadPromise;
         if (uploadedUrls && uploadedUrls.length) {
@@ -166,7 +167,7 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
                 </div>
                 <div>
                     <h2 className="text-2xl mt-2 font-semibold text-gray-800 border-b-2 pb-3">Fotos:</h2>
-                    <UserPhotos username={patientData?.email as string} />
+                    <UserPhotos username={patientData?.email as string} queryKey={['patientPhotos', patientData?.email as string]} />
                     <div className="w-24 mx-auto">
                         <PhotoInput handleUploadImages={handleUploadImages} id="patientphotos" variant="small" />
                     </div>
