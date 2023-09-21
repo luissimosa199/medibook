@@ -9,15 +9,6 @@ import { faChartBar, faDollarSign, faLifeRing, faStethoscope, faUsers, faVideo }
 import Link from 'next/link'
 import ProfileStats from './ProfileStats'
 
-const links = [
-    { icon: faStethoscope, href: "videocall", name: "Iniciar consulta", color: 'bg-sky-400' },
-    { icon: faUsers, href: "pacientes", name: "Pacientes", color: 'bg-emerald-400' },
-    { icon: faLifeRing, href: "soporte", name: "Soporte", color: 'bg-yellow-400' },
-    { icon: faVideo, href: "pacientes", name: "Videollamadas", color: 'bg-violet-400' },
-    { icon: faDollarSign, href: "promo", name: "Promoción", color: 'bg-green-400' },
-    { icon: faChartBar, href: "estadisticas", name: "Ver estadísticas", color: 'bg-teal-400' },
-]
-
 const ProfileCard = () => {
 
     const { data: session } = useSession()
@@ -82,20 +73,9 @@ const ProfileCard = () => {
                 <p className="italic mb-6 text-gray-600">{session!.user!.email}</p>
                 <ProfileStats />
                 <div className="mx-auto flex justify-center max-[443px]:max-w-[11rem] min-[443px]:max-w-[20.7rem] min-[616px]:max-w-[30.5rem]">
-                    
-                    {/* <ProfileButtonsPanel /> */}
 
-                    <ul>
-                        {links.map((e, idx) => {
-                            return (
-                                <li key={idx} className="underline text-lg mb-2 hover:opacity-70">
-                                    <Link href={e.href}>
-                                        {e.name}
-                                    </Link>
-                                </li>
-                            )
-                        })}
-                    </ul>
+                    <ProfileButtonsPanel />
+
                 </div>
             </div>
         </div>

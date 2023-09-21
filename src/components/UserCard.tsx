@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/router";
 import Link from "next/link";
 import ProfilePicture from "./ProfilePicture";
+import ProfileButtonsPanel from "./ProfileButtonsPanel";
 
 interface UserCardProps {
     imageSrc: string;
@@ -32,10 +33,10 @@ const UserCard: FunctionComponent<UserCardProps> = ({ imageSrc, name, descriptio
                     <Link href="/perfil">
                         <ProfilePicture username={session.user.email as string} />
                     </Link>
-                    <div className="text-center">
+                    <div className="text-center flex flex-col gap-2">
                         <p className="font-bold">{session.user.name}</p>
                         <p className="italic">{session.user.email}</p>
-                        <button type="button" onClick={() => signOut()} className="text-sm">Cerrar Sesión</button>
+                        <ProfileButtonsPanel />
                     </div>
                 </div>
             </div>

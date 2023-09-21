@@ -10,9 +10,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const session = await getServerSession(req, res, authOptions);
-  if (!session || !session.user) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
 
   await dbConnect();
 
@@ -21,16 +18,13 @@ export default async function handler(
     return res.status(400).json({ error: "Username is required" });
   }
 
-  if (username !== session.user.email) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
 
   try {
     if (req.method === "GET") {
       const { page } = req.query;
       const perPage = 10;
       const skip = page ? parseInt(page as string) * perPage : 0;
-      const response = await UserModel.findOne({ email: session.user.email })
+      const response = await UserModel.findOne({ email: session?.user?.email || username })
         .select("photos")
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -51,7 +45,7 @@ export default async function handler(
       }
 
       const updatedUser = await UserModel.findOneAndUpdate(
-        { email: session.user.email },
+        { email: session?.user?.email || username },
         { $push: { photos: { $each: photos } } },
         { new: true }
       ).select("photos");
@@ -69,14 +63,14 @@ export default async function handler(
       }
 
       const deletedUserPhoto = new DeletedUserPhotoModel({
-        user: session.user.email,
+        user: session?.user?.email || username,
         url: photo,
       });
 
       await deletedUserPhoto.save();
 
       const updatedUser = await UserModel.findOneAndUpdate(
-        { email: session.user.email },
+        { email: session?.user?.email || username },
         { $pull: { photos: photo } },
         { new: true }
       ).select("photos");

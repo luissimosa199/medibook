@@ -81,9 +81,9 @@ const Usuarios = () => {
 
                                 {/* <Link href="/usuarios/id">Ver publicaciones</Link> */}
 
-                                {session?.user?.email !== paciente.email && <div className="">
-                                    <Link href={`/videocall/${(session!.user!.email as string).split('@')[0]}y${paciente.email.split('@')[0]}`}>
-                                        <FontAwesomeIcon icon={faVideo} />
+                                {session?.user?.email !== paciente.email && <div className="ml-auto">
+                                    <Link className="underline text-lg mb-2 hover:opacity-70" href={`/videocall/${(session!.user!.email as string).split('@')[0]}y${paciente.email.split('@')[0]}`}>
+                                        Iniciar videollamada
                                     </Link>
                                 </div>}
                             </div>

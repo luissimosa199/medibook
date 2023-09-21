@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/react';
 import { CldImage } from 'next-cloudinary';
 import React, { FunctionComponent } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 
 interface UserPhotosProps {
     username: string;
@@ -11,9 +12,9 @@ interface UserPhotosProps {
 
 const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = "flex-col", queryKey = [username, 'userPhotos'] }) => {
 
-    const { data: session} = useSession()
-
-    const patientPicture = session?.user?.email !== username
+    const { data: session } = useSession()
+    const router = useRouter()
+    const patientPicture = !router.asPath.startsWith('/doctor/');
 
     const fetchUserPhotos = async () => {
         const response = await fetch(`/api/${patientPicture ? "pacientes" : "user"}/photos/?username=${encodeURIComponent(username)}`, {
@@ -65,14 +66,17 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
 
     if (isLoading) {
         return (
-            <div className="flex container space-x-2 md:space-x-4 overflow-x-auto py-12 px-2 whitespace-nowrap mb-4 animate-pulse" style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: 'rgba(155, 155, 155, 0.7) transparent'
-            }}>
-                {[...Array(5)].map((_, index) => (
-                    <div key={index} className="relative inline-block w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-gray-300 rounded-md"></div>
-                ))}
-            </div>
+            <>
+                <div className="flex flex-col gap-2 items-center container overflow-x-auto py-12 px-2 mb-4">
+                    {Array(5).fill(null).map((_, idx) => (
+                        <div key={idx} className="relative w-fit flex-shrink-0">
+                            <div className="w-6 h-6 absolute top-0 right-0 bg-gray-300 p-1 rounded-full"></div>
+                            <div className="w-[700px] h-[700px] bg-gray-200 rounded mx-auto"></div>
+                        </div>
+                    ))}
+                </div>
+            </>
+
         )
     }
 
