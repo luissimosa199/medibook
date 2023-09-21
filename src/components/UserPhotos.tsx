@@ -9,7 +9,7 @@ interface UserPhotosProps {
     queryKey?: string[]
 }
 
-const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = "flex-row", queryKey = [username, 'userPhotos'] }) => {
+const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = "flex-col", queryKey = [username, 'userPhotos'] }) => {
 
     const { data: session} = useSession()
 
@@ -84,21 +84,7 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
 
     return (
         <>
-            <style>{`
-                .container::-webkit-scrollbar {
-                    width: 6px; 
-                    height: 6px; 
-                }
-
-                .container::-webkit-scrollbar-thumb {
-                    background-color: rgba(155, 155, 155, 0.7);
-                    border-radius: 4px;
-                }
-            `}</style>
-            <div className={`flex ${direction} gap-2 items-center container space-x-2 md:space-x-4 overflow-x-auto py-12 px-2 whitespace-nowrap mb-4`} style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: 'rgba(155, 155, 155, 0.7) transparent'
-            }}>
+            <div className={`flex ${direction} gap-2 items-center container space-x-2 md:space-x-4 overflow-x-auto py-12 px-2 whitespace-nowrap mb-4`}>
                 {data && data.length > 0
                     ? data.map((e: string) => {
 
@@ -117,15 +103,15 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
                                 {isVideo ?
                                     <video
                                         controls
-                                        width="300"
-                                        height="300"
+                                        width="700"
+                                        height="700"
                                         className="rounded mx-auto"
                                     >
                                         <source src={e} type="video/mp4" />
                                         Your browser does not support the video tag.
                                     </video>
                                     :
-                                    <CldImage alt="" src={e} width={300} height={300} className="object-cover rounded-md shadow" />
+                                    <CldImage alt="" src={e} width={700} height={700} className="object-cover rounded-md shadow" />
                                 }
                             </div>
 
