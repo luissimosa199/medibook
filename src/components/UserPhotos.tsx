@@ -14,7 +14,7 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({ username, direction = 
 
     const { data: session } = useSession()
     const router = useRouter()
-    const patientPicture = !router.asPath.startsWith('/doctor/');
+    const patientPicture = router.asPath.startsWith('/pacientes/');
 
     const fetchUserPhotos = async () => {
         const response = await fetch(`/api/${patientPicture ? "pacientes" : "user"}/photos/?username=${encodeURIComponent(username)}`, {
