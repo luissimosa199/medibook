@@ -5,8 +5,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { uploadImages } from '@/utils/formHelpers'
 import PhotoInput from './PhotoInput'
 import ProfileButtonsPanel from './ProfileButtonsPanel'
-import { faChartBar, faDollarSign, faLifeRing, faStethoscope, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons'
-import Link from 'next/link'
 import ProfileStats from './ProfileStats'
 
 const ProfileCard = () => {

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React, { FunctionComponent } from 'react'
 
 const buttons = [
-    // { icon: faStethoscope, href: "videocall", name: "Iniciar consulta", color: 'bg-sky-400' },
+    { icon: faStethoscope, href: "videocall", name: "Iniciar consulta", color: 'bg-sky-400' },
     { icon: faUsers, href: "pacientes", name: "Pacientes", color: 'bg-emerald-400' },
     // { icon: faLifeRing, href: "soporte", name: "Soporte", color: 'bg-yellow-400' },
     { icon: faVideo, href: "pacientes", name: "Videollamadas", color: 'bg-violet-400' },

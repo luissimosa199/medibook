@@ -71,11 +71,11 @@ export default async function handler(
 
         const countResults = await UserAgentModel.aggregate([
           {
-            $unwind: "$visit", // Flatten the array
+            $unwind: "$visits", // Flatten the array
           },
           {
             $match: {
-              "visit.entry_point": new RegExp((username as string).split('@')[0] + "$"), // Match entry_point that ends with username
+              "visits.entry_point": new RegExp((username as string).split('@')[0] + "$"), // Match entry_point that ends with username
             },
           },
           {

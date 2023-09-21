@@ -1,14 +1,12 @@
 import dbConnect from "@/db/dbConnect"
 import { UserModel } from "@/db/models/userModel"
 import { User } from "@/types"
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { GetServerSidePropsContext } from "next"
 import Image from "next/image"
-import Link from "next/link"
 import { FunctionComponent } from "react"
 import escapeStringRegexp from 'escape-string-regexp';
 import UserPhotos from "@/components/UserPhotos"
+// import useTrackUserAgent from "@/hooks/useTrackUserAgent"
 
 interface UserPageProps {
     userData: User | null
@@ -16,12 +14,11 @@ interface UserPageProps {
 
 const User: FunctionComponent<UserPageProps> = ({ userData }) => {
 
+    // useTrackUserAgent()
+
     return (
         <div className="p-8 bg-gray-50 space-y-12">
             <div className="flex gap-2 items-center">
-                <Link href="/usuarios" className="w-4 h-4">
-                    <FontAwesomeIcon icon={faArrowLeft} />
-                </Link>
                 <h1 className="text-4xl font-bold text-gray-800 border-b-2 pb-3">{userData?.name}</h1>
             </div>
             <div className="flex flex-col justify-around items-center border rounded-lg p-6 bg-white shadow-lg">
@@ -35,6 +32,7 @@ const User: FunctionComponent<UserPageProps> = ({ userData }) => {
                             alt={`${userData?.name}'s Avatar`}
                             className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-5"
                         />
+
                     </div>
                 </div>
 
