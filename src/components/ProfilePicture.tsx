@@ -1,53 +1,65 @@
-import Image from 'next/image'
-import { FunctionComponent } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
+import Image from "next/image";
+import { FunctionComponent } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 interface ProfilePictureProps {
-    username: string;
+  username: string;
+  w?: number;
+  h?: number;
 }
 
-const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({ username }) => {
+const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({
+  username,
+  w = 128,
+  h = 128,
+}) => {
+  const { data: session } = useSession();
 
-    const { data: session } = useSession()
+  const fetchProfilePicture = async () => {
+    const response = await fetch(
+      `/api/${
+        session?.user?.email === username ? "user" : "pacientes"
+      }/avatar/?username=${encodeURIComponent(username as string)}`
+    );
+    const data = response.json();
+    return data;
+  };
 
-    const fetchProfilePicture = async () => {
-        const response = await fetch(`/api/${ session?.user?.email === username ? "user" : "pacientes" }/avatar/?username=${encodeURIComponent(username as string)}`)
-        const data = response.json()
-        return data
-    }
+  const { data, isLoading, isError } = useQuery(
+    [username, "profilePicture"],
+    fetchProfilePicture
+  );
 
-    const { data, isLoading, isError } = useQuery([username, 'profilePicture'], fetchProfilePicture)
-
-    if (isLoading) {
-        return (
-            <div className="flex flex-col items-center">
-                <div className="w-32 h-32 object-cover rounded-full border mb-4"></div>
-            </div>
-        )
-    }
-
-    if (isError) {
-        return (
-            <div className="flex flex-col items-center">
-                <div className="w-32 h-32 object-cover rounded-full border mb-4">
-                    <p>Error</p>
-                </div>
-            </div>
-        )
-    }
-
+  if (isLoading) {
     return (
-        <div className="flex flex-col items-center">
-            <Image
-                src={(data.image as string) || '/noprofile.png'}
-                width={128}
-                height={128}
-                alt={`${username}'s Avatar`}
-                className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-5"
-            />
-        </div>
-    )
-}
+      <div className="flex flex-col items-center">
+        <div className="object-cover rounded-full border mb-4"></div>
+      </div>
+    );
+  }
 
-export default ProfilePicture
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center">
+        <div className="object-cover rounded-full border mb-4">
+          <p>Error</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <Image
+        src={(data.image as string) || "/noprofile.png"}
+        width={w}
+        height={h}
+        alt={`${username}'s Avatar`}
+        className="object-cover rounded-full border-2 border-gray-300"
+      />
+    </div>
+  );
+};
+
+export default ProfilePicture;
