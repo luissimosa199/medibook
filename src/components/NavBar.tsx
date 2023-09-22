@@ -24,15 +24,18 @@ const Navbar = () => {
       </div>
 
       <div className="flex gap-1 md:gap-2 items-center justify-end w-fit md:w-1/3:">
-        <p className="text-3xl">
-          {/* {session?.user?.name} */}
-          Alexander
-        </p>
-        <ProfilePicture
-          username={session?.user?.email as string}
-          w={70}
-          h={70}
-        />
+        {session ? (
+          <>
+            <p className="text-3xl">{session?.user?.name}</p>
+            <ProfilePicture
+              username={session?.user?.email as string}
+              w={70}
+              h={70}
+            />
+          </>
+        ) : (
+          <p className="text-3xl">Inciar Sesion</p>
+        )}
 
         <button
           className=""

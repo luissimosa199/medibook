@@ -11,13 +11,17 @@ export class Message {
   message: string;
 }
 
+class CurrentCall {
+  duration: Date;
+  initTime: Date;
+}
+
 @modelOptions({
   schemaOptions: {
     timestamps: true,
   },
 })
 export class VideoCallChat {
-
   @prop()
   _id: string;
 
@@ -29,6 +33,9 @@ export class VideoCallChat {
 
   @prop({ default: () => new Date() })
   updatedAt: Date;
+
+  @prop()
+  currentCall: CurrentCall;
 
   @prop()
   messages: Message[];
