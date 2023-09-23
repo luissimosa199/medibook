@@ -12,7 +12,10 @@ export class Message {
 }
 
 class CurrentCall {
-  duration: Date;
+  @prop()
+  duration: number;
+
+  @prop()
   initTime: Date;
 }
 

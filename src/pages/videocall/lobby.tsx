@@ -11,7 +11,7 @@ import { useState } from "react";
 
 const VideoCallLobby = () => {
   const router = useRouter();
-  const { pacient, username, time, amount } = router.query;
+  const { patient, username, time, amount } = router.query;
 
   const [paymentLink, setPaymentLink] = useState<string | null>(
     "https://mp.pago.com/1234567"
@@ -22,16 +22,53 @@ const VideoCallLobby = () => {
     // You can add some feedback here, like showing a tooltip or changing the button text to "Copied!"
   };
 
-  const handleProceedToCall = (e: React.MouseEvent<HTMLButtonElement>) => {
+  // const handleProceedToCall = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   const data = {
+  //     patient,
+  //     username,
+  //     duration: time,
+  //     amount,
+  //   };
+
+  //   console.log(data);
+
+  //   router.push(`/videocall/${username as string}y${patient as string}`);
+  // };
+
+  const handleProceedToCall = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
-    const data = {
-      pacient,
-      username,
-      time,
-      amount,
+    if (!time) {
+      throw new Error("Time is required");
+    }
+    const dataToSend = {
+      duration: parseInt(time as string) * 60 * 1000,
     };
 
-    console.log(data);
+    try {
+      const response = await fetch(
+        `/api/videocall?room=${username as string}y${patient as string}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
+
+      if (response.ok) {
+        router.push(`/videocall/${username as string}y${patient as string}`);
+      } else {
+        // custom responses depending on the be
+        const responseData = await response.json();
+        console.error("Error creating call:", responseData.error);
+      }
+    } catch (error) {
+      console.error("Network or other error:", error);
+    }
   };
 
   return (
@@ -50,10 +87,10 @@ const VideoCallLobby = () => {
         <div className="mb-4">
           <div className="flex gap-2 mb-1 items-center">
             <FontAwesomeIcon icon={faUser} />
-            <p className="text-gray-600">Paciente:</p>
+            <p className="text-gray-600">patiente:</p>
           </div>
           <div className="flex items-center justify-between bg-gray-100 p-2 rounded-md">
-            <span>{pacient}</span>
+            <span>{patient}</span>
           </div>
         </div>
 
@@ -99,7 +136,7 @@ const VideoCallLobby = () => {
         {/* <div className="mt-2 bg-blue-500 w-full text-white text-center py-2 px-4 rounded hover:bg-blue-600 focus:outline-none">
         <Link
           href={`/videocall/${username as string}y${
-            pacient as string
+            patient as string
           }?time=${time}`}
           className=""
         >

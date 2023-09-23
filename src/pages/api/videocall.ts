@@ -15,18 +15,28 @@ export default async function handler(
     if (chat && chat.currentCall) {
       const currentTime = new Date().getTime();
       const initTime = new Date(chat.currentCall.initTime).getTime();
-      const timePassed = currentTime - initTime;
-      const timeLeft =
-        new Date(chat.currentCall.duration).getTime() - timePassed;
+      const duration = chat.currentCall.duration;
+      const endTime = initTime + duration;
+      const timeLeft = endTime - currentTime;
 
       const timeLeftInMinutes = Math.floor(timeLeft / (60 * 1000));
+
+      if (timeLeft <= 0) {
+        await VideoCallChatModel.findByIdAndUpdate(room, {
+          $set: {
+            currentCall: null,
+          },
+        });
+
+        return res.status(404).json({ error: "Chat not found" });
+      }
 
       res.status(200).json({ timeLeft: timeLeftInMinutes });
     } else {
       res.status(404).json({ error: "Chat not found" });
     }
   } else if (req.method === "POST") {
-    const body = JSON.parse(req.body);
+    const body = req.body;
 
     const initTime = new Date();
     const duration = body.duration;
@@ -43,7 +53,7 @@ export default async function handler(
       const updateChat = await VideoCallChatModel.findByIdAndUpdate(
         room,
         {
-          $push: {
+          $set: {
             currentCall: {
               initTime,
               duration,
@@ -73,5 +83,3 @@ export default async function handler(
     }
   }
 }
-
-// como programamos la eliminación de ese registro_ TLL??

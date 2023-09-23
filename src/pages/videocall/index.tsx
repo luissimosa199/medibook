@@ -12,7 +12,7 @@ const Videocall = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  const [pacient, setPacient] = useState("");
+  const [patient, setPatient] = useState("");
   const [amount, setAmount] = useState("");
   const [time, setTime] = useState("");
 
@@ -26,13 +26,13 @@ const Videocall = () => {
       router.push(
         `/videocall/lobby?username=${encodeURIComponent(
           session.user.name as string
-        )}&pacient=${encodeURIComponent(pacient)}&time=${encodeURIComponent(
+        )}&patient=${encodeURIComponent(patient)}&time=${encodeURIComponent(
           time
         )}&amount=${encodeURIComponent(amount)}`
       );
       setAmount("");
       setTime("");
-      setPacient("");
+      setPatient("");
     }
   };
 
@@ -47,17 +47,17 @@ const Videocall = () => {
             htmlFor="amount"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Ingrese nombre del paciente
+            Ingrese nombre del patiente
           </label>
           <div className="flex relative">
             <span className="text-lg mr-2 leading-10 left-2 absolute">
               <FontAwesomeIcon icon={faUser} />
             </span>
             <input
-              onChange={(e) => setPacient(e.target.value)}
-              value={pacient}
+              onChange={(e) => setPatient(e.target.value)}
+              value={patient}
               type="text"
-              id="pacient"
+              id="patient"
               className="p-2 border pl-8 text-lg leading-tight rounded-md w-full focus:outline-none focus:border-blue-500"
             />
           </div>
