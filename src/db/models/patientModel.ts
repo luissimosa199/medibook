@@ -17,6 +17,9 @@ export class Patient {
   image?: string;
 
   @prop()
+  tags?: string[];
+
+  @prop()
   photos?: string[];
 
   @prop({ required: true })

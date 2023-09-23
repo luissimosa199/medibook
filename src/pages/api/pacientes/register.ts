@@ -8,18 +8,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-    const { name, email, tlf, details, doctor } = req.body;
+  const { name, email, tlf, details, doctor, tags } = req.body;
 
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session || !session.user || session.user.email !== doctor ) {
+  if (!session || !session.user || session.user.email !== doctor) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
   if (req.method !== "POST") {
     return res.status(405).end(); // Method Not Allowed
   }
-
 
   if (!name || !email || !doctor) {
     return res.status(400).json({ error: "Campos requeridos incompletos." });
@@ -28,7 +27,10 @@ export default async function handler(
   await dbConnect();
 
   try {
-    const existingUser = await PatientModel.findOne({ doctor: session.user.email, email });
+    const existingUser = await PatientModel.findOne({
+      doctor: session.user.email,
+      email,
+    });
     if (existingUser) {
       return res
         .status(409)
@@ -36,7 +38,7 @@ export default async function handler(
     }
 
     // Create the user
-    const user = new PatientModel({ name, email, tlf, details, doctor });
+    const user = new PatientModel({ name, email, tlf, details, doctor, tags });
     await user.save();
 
     return res
