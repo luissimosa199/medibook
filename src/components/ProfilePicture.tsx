@@ -2,6 +2,7 @@ import Image from "next/image";
 import { FunctionComponent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface ProfilePictureProps {
   username: string;
@@ -50,14 +51,17 @@ const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Image
-        src={(data.image as string) || "/noprofile.png"}
-        width={w}
-        height={h}
-        alt={`${username}'s Avatar`}
-        className="object-cover rounded-full border-2 border-gray-300"
-      />
+    <div className={`flex flex-col items-center justify-center`}>
+      <Link href="/perfil">
+        <Image
+          src={(data.image as string) || "/noprofile.png"}
+          width={w}
+          height={h}
+          alt={`${username}'s Avatar`}
+          className={`h-[${h}px] object-cover rounded-full border-2 border-gray-300`}
+          style={{ height: `${h}px` }}
+        />
+      </Link>
     </div>
   );
 };
