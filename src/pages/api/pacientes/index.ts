@@ -3,15 +3,15 @@ import dbConnect from "../../../db/dbConnect";
 import { PatientModel } from "@/db/models";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import mongoose from "mongoose";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session || !session.user ) {
+  if (!session || !session.user) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
@@ -19,12 +19,37 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
-      const patients = await PatientModel.find({ doctor: session.user.email }).select("email name image");
+      const patients = await PatientModel.find({ doctor: session.user.email })
+        .select("email name image")
+        .sort({ createdAt: -1 });
       if (!patients) {
         return res.status(404).json({ error: "No patients found" });
       }
 
       return res.status(200).json(patients);
+    } else if (req.method === "POST") {
+      // migrar register?
+      console.log("POST");
+    } else if (req.method === "DELETE") {
+      const { id } = req.query;
+
+      let queryId;
+
+      if (mongoose.Types.ObjectId.isValid(id as string)) {
+        queryId = new mongoose.Types.ObjectId(id as string);
+      } else {
+        queryId = id as string;
+      }
+
+      const deletedPatient = await PatientModel.findOneAndRemove({
+        _id: queryId,
+      });
+
+      if (deletedPatient) {
+        res.status(204).end(); // 204 No Content
+      } else {
+        res.status(404).json({ message: "Patient not found" });
+      }
     } else {
       return res.status(405).json({ error: "Method not allowed" });
     }

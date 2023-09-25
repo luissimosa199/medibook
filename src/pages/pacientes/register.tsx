@@ -79,7 +79,6 @@ export default function Register() {
             name="email"
             type="email"
             id="email"
-            required
           />
         </div>
 

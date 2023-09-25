@@ -28,13 +28,13 @@ const Navbar = () => {
           <>
             <p className="text-3xl">{session?.user?.name}</p>
             <ProfilePicture
-              username={session?.user?.email as string}
+              type="user"
               w={70}
               h={70}
             />
           </>
         ) : (
-          <p className="text-3xl">Inciar Sesion</p>
+          <p className="text-3xl">Iniciar Sesion</p>
         )}
 
         <button

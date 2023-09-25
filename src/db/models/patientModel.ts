@@ -1,11 +1,17 @@
-import { prop } from "@typegoose/typegoose";
+import { modelOptions, prop } from "@typegoose/typegoose";
+import { ObjectId } from "mongodb";
+import { nanoid } from "nanoid";
 
+@modelOptions({ schemaOptions: { timestamps: true } })
 export class Patient {
+  @prop({ default: () => nanoid(9) })
+  _id: string | ObjectId;
+
   @prop({ required: true })
   name: string;
 
-  @prop({ required: true })
-  email: string;
+  @prop()
+  email?: string;
 
   @prop()
   tlf?: string;

@@ -15,16 +15,15 @@ export default async function handler(
 
   await dbConnect();
 
-  const { username } = req.query;
-  if (!username) {
-    return res.status(400).json({ error: "Username is required" });
+  const { userId } = req.query;
+  if (!userId) {
+    return res.status(400).json({ error: "UserId is required" });
   }
 
   try {
     if (req.method === "POST") {
       const { image } = req.body;
 
-      
       if (!image || typeof image !== "string") {
         return res
           .status(400)
@@ -32,7 +31,7 @@ export default async function handler(
       }
 
       const updatedUser = await PatientModel.findOneAndUpdate(
-        { email: username },
+        { _id: userId },
         { $set: { image } },
         { new: true }
       ).select("image");
@@ -43,7 +42,7 @@ export default async function handler(
 
       return res.status(200).json({ image: updatedUser.image });
     } else if (req.method === "GET") {
-      const user = await PatientModel.findOne({ email: username }).select("image");
+      const user = await PatientModel.findOne({ _id: userId }).select("image");
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }

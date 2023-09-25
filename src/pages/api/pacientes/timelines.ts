@@ -20,16 +20,16 @@ export default async function handler(
       return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const { page, username } = req.query;
+    const { page, userId } = req.query;
 
-    if (!username) {
-      return res.status(400).json({ error: "Username is required" });
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
     }
 
     const perPage = 10;
     const skip = page ? parseInt(page as string) * perPage : 0;
 
-    const response = await TimeLineModel.find({ authorId: username })
+    const response = await TimeLineModel.find({ authorId: userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(perPage)

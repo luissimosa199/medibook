@@ -5,13 +5,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
 interface UserPhotosProps {
-  username: string;
+  username?: string;
+  userId?: string;
   direction?: "flex-col" | "flex-row";
   queryKey?: string[];
 }
 
 const UserPhotos: FunctionComponent<UserPhotosProps> = ({
   username,
+  userId,
   direction = "flex-col",
   queryKey = [username, "userPhotos"],
 }) => {
@@ -21,9 +23,11 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({
 
   const fetchUserPhotos = async () => {
     const response = await fetch(
-      `/api/${
-        patientPicture ? "pacientes" : "user"
-      }/photos/?username=${encodeURIComponent(username)}`,
+      `/api/${patientPicture ? "pacientes" : "user"}/photos/?${
+        patientPicture
+          ? `userId=${userId}`
+          : `username=${encodeURIComponent(username as string)}`
+      }`,
       {
         method: "GET",
       }
@@ -34,9 +38,11 @@ const UserPhotos: FunctionComponent<UserPhotosProps> = ({
 
   const deleteUserPhoto = async (photoUrl: string) => {
     const response = await fetch(
-      `/api/${
-        patientPicture ? "pacientes" : "user"
-      }/photos/?username=${encodeURIComponent(username)}`,
+      `/api/${patientPicture ? "pacientes" : "user"}/photos/?${
+        patientPicture
+          ? `userId=${userId}`
+          : `username=${encodeURIComponent(username as string)}`
+      }`,
       {
         method: "DELETE",
         headers: {

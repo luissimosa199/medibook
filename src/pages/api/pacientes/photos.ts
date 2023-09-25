@@ -15,18 +15,18 @@ export default async function handler(
 
   await dbConnect();
 
-  const { username } = req.query;
-  if (!username) {
-    return res.status(400).json({ error: "Username is required" });
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ error: "userId is required" });
   }
 
   try {
     if (req.method === "GET") {
-
       const { page } = req.query;
       const perPage = 10;
       const skip = page ? parseInt(page as string) * perPage : 0;
-      const response = await PatientModel.findOne({ email: username })
+      const response = await PatientModel.findOne({ _id: userId })
         .select("photos")
         .sort({ createdAt: -1 })
         .skip(skip)
@@ -37,9 +37,7 @@ export default async function handler(
         return res.status(200).json({ photos: [] });
       }
       return res.status(200).json(response!.photos);
-
     } else if (req.method === "POST") {
-
       const { photos } = req.body;
 
       if (!photos || !Array.isArray(photos)) {
@@ -49,7 +47,7 @@ export default async function handler(
       }
 
       const updatedUser = await PatientModel.findOneAndUpdate(
-        { email: username },
+        { _id: userId },
         { $push: { photos: { $each: photos } } },
         { new: true }
       ).select("photos");
@@ -59,7 +57,6 @@ export default async function handler(
       }
 
       return res.status(200).json(photos);
-
     } else if (req.method === "DELETE") {
       const { photo } = req.body;
 
@@ -68,24 +65,22 @@ export default async function handler(
       }
 
       const deletedUserPhoto = new DeletedUserPhotoModel({
-        user: username,
+        user: userId,
         url: photo,
       });
 
       await deletedUserPhoto.save();
 
       const updatedUser = await PatientModel.findOneAndUpdate(
-        { email: username },
+        { _id: userId },
         { $pull: { photos: photo } },
         { new: true }
       ).select("photos");
 
       if (!updatedUser) {
-        return res
-          .status(404)
-          .json({
-            error: "User not found or photo not found in user's photo array",
-          });
+        return res.status(404).json({
+          error: "User not found or photo not found in user's photo array",
+        });
       }
 
       return res.status(200).json(updatedUser.photos);

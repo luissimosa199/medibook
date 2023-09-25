@@ -4,7 +4,9 @@ import React, { useState } from "react";
 const NavBarButton = () => {
   const [showNavBar, setShowNavBar] = useState<boolean>(false);
 
-  const handleOpenNavBar = (e: any) => {
+  const handleOpenNavBar = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
     setShowNavBar(!showNavBar);
   };

@@ -20,7 +20,7 @@ export default async function handler(
     return res.status(405).end(); // Method Not Allowed
   }
 
-  if (!name || !email || !doctor) {
+  if (!name || !doctor) {
     return res.status(400).json({ error: "Campos requeridos incompletos." });
   }
 
@@ -29,12 +29,12 @@ export default async function handler(
   try {
     const existingUser = await PatientModel.findOne({
       doctor: session.user.email,
-      email,
+      name,
     });
     if (existingUser) {
       return res
         .status(409)
-        .json({ error: "Paciente con el mismo mail ya existe" });
+        .json({ error: "Paciente con el mismo nombre ya existe" });
     }
 
     // Create the user
