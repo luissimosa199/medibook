@@ -33,7 +33,7 @@ export default async function handler(
       }
 
       const patients = await PatientModel.find({ doctor: session.user.email })
-        .select("email name image")
+        .select("email name image tags")
         .sort({ createdAt: -1 });
       if (!patients) {
         return res.status(404).json({ error: "No patients found" });

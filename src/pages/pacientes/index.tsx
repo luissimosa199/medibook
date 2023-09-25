@@ -1,22 +1,25 @@
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
+import PatientCard from "@/components/PatientCard";
+import { useState } from "react";
+import PatientsFilters from "@/components/PatientsFilters";
 
 interface UserInterface {
   name: string;
   email: string;
   image: string;
   _id: string;
+  tags: string[];
 }
 
 const Usuarios = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const queryClient = useQueryClient();
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const fetchUsers = async () => {
     const response = await fetch("/api/pacientes", {
@@ -94,9 +97,23 @@ const Usuarios = () => {
 
   if (error) return <p>Error {JSON.stringify(error)} </p>;
 
+  const tags = Array.from(
+    new Set(pacientes.flatMap((e: UserInterface) => e.tags))
+  ) as string[];
+
+  const filteredPatients = pacientes.filter((paciente: UserInterface) => {
+    return selectedTags.every((tag) => paciente.tags.includes(tag));
+  });
+
   return (
     <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen">
       <Link href="/pacientes/register">Registrar nuevo paciente</Link>
+
+      <PatientsFilters
+        tags={tags}
+        setSelectedTags={setSelectedTags}
+      />
+
       <ul className="divide-y divide-gray-200">
         {pacientes.length === 0 && (
           <li className="py-4 space-y-4">
@@ -105,70 +122,28 @@ const Usuarios = () => {
             </div>
           </li>
         )}
-        {pacientes.map((paciente: UserInterface) => {
-          return (
-            <li
-              key={paciente._id}
-              className="py-4 space-y-4"
-            >
-              <div className="flex items-center gap-4">
-                <div className="rounded-full h-[150px] w-[150px] border-2 overflow-hidden relative">
-                  <Link href={`/pacientes/${paciente._id}`}>
-                    <Image
-                      alt={`foto de ${paciente.name}`}
-                      src={paciente.image || "/noprofile.png"}
-                      fill
-                      className="absolute object-cover"
-                    />
-                  </Link>
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-lg font-medium">{paciente.name}</p>
-                </div>
 
-                {/* <Link href="/usuarios/id">Ver publicaciones</Link> */}
-
-                <div className="ml-auto flex gap-2">
-                  {session?.user && (
-                    <Link
-                      className="underline text-lg mb-2 hover:opacity-70"
-                      href={`/videocall/${
-                        (session?.user?.email as string).split("@")[0]
-                      }y${paciente.name}`}
-                    >
-                      Iniciar videollamada
-                    </Link>
-                  )}
-                  <button
-                    className="hover:text-red-500 transition"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      deleteMutation.mutate(paciente._id);
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      size="lg"
-                      icon={faTrashCan}
-                    />
-                  </button>
-
-                  <button
-                    className="hover:text-blue-500 transition"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push(`/pacientes/edit/${paciente._id}`);
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPenToSquare}
-                      size="lg"
-                    />
-                  </button>
-                </div>
-              </div>
-            </li>
-          );
-        })}
+        {selectedTags.length > 0
+          ? filteredPatients.map((paciente: UserInterface, idx: number) => {
+              return (
+                <PatientCard
+                  key={idx}
+                  session={session}
+                  paciente={paciente}
+                  deleteMutation={deleteMutation}
+                />
+              );
+            })
+          : pacientes.map((paciente: UserInterface, idx: number) => {
+              return (
+                <PatientCard
+                  key={idx}
+                  session={session}
+                  paciente={paciente}
+                  deleteMutation={deleteMutation}
+                />
+              );
+            })}
       </ul>
     </div>
   );

@@ -5,10 +5,6 @@ const Footer = () => {
   return (
     <footer className="flex flex-col md:flex-row md:justify-around p-10 bg-base-200 text-base-content">
       <div className="flex flex-col gap-2 mb-4">
-        <span className="mb-2 font-semibold uppercase opacity-50">
-          Services
-        </span>
-
         <Link href="/">
           <span className="hover:underline">Homepage</span>
         </Link>
@@ -19,9 +15,6 @@ const Footer = () => {
       </div>
 
       <div className="flex flex-col gap-2 mb-4">
-        <span className="mb-2 font-semibold uppercase opacity-50 text-transparent">
-          |
-        </span>
         <Link href="/videocall">
           <span className="hover:underline">Iniciar consulta</span>
         </Link>
@@ -32,15 +25,12 @@ const Footer = () => {
       </div>
 
       <div className="flex flex-col gap-2 mb-4">
-        <span className="mb-2 font-semibold uppercase opacity-50 text-transparent">
-          |
-        </span>
         <Link href="/videocall">
           <span className="hover:underline">Videollamadas</span>
         </Link>
       </div>
 
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <span className="mb-4 font-semibold uppercase opacity-50">
           Newsletter
         </span>
@@ -57,7 +47,7 @@ const Footer = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="flex flex-col gap-2 mb-4">
         <span className="mb-2 font-semibold uppercase opacity-50">Links</span>
