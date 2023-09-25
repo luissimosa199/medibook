@@ -63,8 +63,7 @@ export default async function handler(
       } else {
         res.status(404).json({ message: "Patient not found" });
       }
-    }
-    if (req.method === "PUT") {
+    } else if (req.method === "PUT") {
       const { id } = req.query;
 
       let queryId;
