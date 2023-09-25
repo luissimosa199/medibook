@@ -3,6 +3,7 @@ import dbConnect from "../../../db/dbConnect";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { PatientModel } from "@/db/models";
+import mongoose from "mongoose";
 
 export default async function handler(
   req: NextApiRequest,
@@ -42,7 +43,14 @@ export default async function handler(
 
       return res.status(200).json({ image: updatedUser.image });
     } else if (req.method === "GET") {
-      const user = await PatientModel.findOne({ _id: userId }).select("image");
+      let queryId;
+      if (mongoose.Types.ObjectId.isValid(userId as string)) {
+        queryId = new mongoose.Types.ObjectId(userId as string);
+      } else {
+        queryId = userId as string;
+      }
+
+      const user = await PatientModel.findOne({ _id: queryId }).select("image");
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }

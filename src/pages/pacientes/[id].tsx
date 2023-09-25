@@ -13,6 +13,7 @@ import { handleFileAdding, uploadImages } from "@/utils/formHelpers";
 import PrimaryForm from "@/components/PrimaryForm";
 import PatientTimelines from "@/components/PatientTimelines";
 import ProfilePicture from "@/components/ProfilePicture";
+import mongoose from "mongoose";
 
 interface PatientePageProps {
   patientData?: {
@@ -315,7 +316,14 @@ export const getServerSideProps = async (
 
     const { id } = context.query;
 
-    const patient = await PatientModel.findOne({ _id: id })
+    let queryId;
+    if (mongoose.Types.ObjectId.isValid(id as string)) {
+      queryId = new mongoose.Types.ObjectId(id as string);
+    } else {
+      queryId = id as string;
+    }
+
+    const patient = await PatientModel.findOne({ _id: queryId })
       .select("name email tlf details image _id")
       .lean();
 

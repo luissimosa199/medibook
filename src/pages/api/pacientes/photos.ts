@@ -3,6 +3,7 @@ import dbConnect from "../../../db/dbConnect";
 import { DeletedUserPhotoModel, PatientModel } from "@/db/models";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import mongoose from "mongoose";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,6 +18,13 @@ export default async function handler(
 
   const { userId } = req.query;
 
+  let queryId;
+  if (mongoose.Types.ObjectId.isValid(userId as string)) {
+    queryId = new mongoose.Types.ObjectId(userId as string);
+  } else {
+    queryId = userId as string;
+  }
+
   if (!userId) {
     return res.status(400).json({ error: "userId is required" });
   }
@@ -26,7 +34,7 @@ export default async function handler(
       const { page } = req.query;
       const perPage = 10;
       const skip = page ? parseInt(page as string) * perPage : 0;
-      const response = await PatientModel.findOne({ _id: userId })
+      const response = await PatientModel.findOne({ _id: queryId })
         .select("photos")
         .sort({ createdAt: -1 })
         .skip(skip)
