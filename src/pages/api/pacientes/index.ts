@@ -19,6 +19,19 @@ export default async function handler(
 
   try {
     if (req.method === "GET") {
+      const { id } = req.query;
+
+      if (id) {
+        let queryId;
+        if (mongoose.Types.ObjectId.isValid(id as string)) {
+          queryId = new mongoose.Types.ObjectId(id as string);
+        } else {
+          queryId = id as string;
+        }
+        const patient = await PatientModel.findOne({ _id: queryId });
+        return res.status(200).json(patient);
+      }
+
       const patients = await PatientModel.find({ doctor: session.user.email })
         .select("email name image")
         .sort({ createdAt: -1 });
@@ -49,6 +62,39 @@ export default async function handler(
         res.status(204).end(); // 204 No Content
       } else {
         res.status(404).json({ message: "Patient not found" });
+      }
+    }
+    if (req.method === "PUT") {
+      const { id } = req.query;
+
+      let queryId;
+
+      if (mongoose.Types.ObjectId.isValid(id as string)) {
+        queryId = new mongoose.Types.ObjectId(id as string);
+      } else {
+        queryId = id as string;
+      }
+
+      try {
+        const updateData = req.body; // Assuming the request body contains updated patient data
+
+        const updatedPatient = await PatientModel.findOneAndUpdate(
+          { _id: queryId },
+          updateData,
+          {
+            new: true, // Returns the updated document
+          }
+        );
+
+        if (updatedPatient) {
+          res.status(200).json(updatedPatient); // Send back the updated patient data
+        } else {
+          res.status(404).json({ message: "Patient not found" });
+        }
+      } catch (error) {
+        res
+          .status(500)
+          .json({ message: "Internal server error", error: error });
       }
     } else {
       return res.status(405).json({ error: "Method not allowed" });

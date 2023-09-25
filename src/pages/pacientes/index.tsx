@@ -2,8 +2,9 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/router";
 
 interface UserInterface {
   name: string;
@@ -13,7 +14,8 @@ interface UserInterface {
 }
 
 const Usuarios = () => {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const queryClient = useQueryClient();
 
   const fetchUsers = async () => {
@@ -60,6 +62,10 @@ const Usuarios = () => {
     error,
     isLoading,
   } = useQuery(["pacientes"], fetchUsers);
+
+  if (status === "unauthenticated") {
+    router.push("/login");
+  }
 
   if (isLoading)
     return (
@@ -140,7 +146,23 @@ const Usuarios = () => {
                       deleteMutation.mutate(paciente._id);
                     }}
                   >
-                    <FontAwesomeIcon icon={faTrashCan} />
+                    <FontAwesomeIcon
+                      size="lg"
+                      icon={faTrashCan}
+                    />
+                  </button>
+
+                  <button
+                    className="hover:text-blue-500 transition"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push(`/pacientes/edit/${paciente._id}`);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      size="lg"
+                    />
                   </button>
                 </div>
               </div>
