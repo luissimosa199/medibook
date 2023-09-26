@@ -7,7 +7,6 @@ import {
   SocketContextType,
   UserInRoom,
 } from "@/types";
-import { useRouter } from "next/router";
 import { saveChat } from "@/utils/saveChat";
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);

@@ -22,7 +22,7 @@ const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks();
 
 const VideoCallPage = () => {
   const router = useRouter();
-  const { id: channelName, time } = router.query;
+  const { id: channelName } = router.query;
 
   const [inCall, setInCall] = useState(false);
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);

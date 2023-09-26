@@ -2,7 +2,6 @@ import {
   faUserDoctor,
   faClock,
   faDollarSign,
-  faLink,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,22 +18,7 @@ const VideoCallLobby = () => {
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    // You can add some feedback here, like showing a tooltip or changing the button text to "Copied!"
   };
-
-  // const handleProceedToCall = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   const data = {
-  //     patient,
-  //     username,
-  //     duration: time,
-  //     amount,
-  //   };
-
-  //   console.log(data);
-
-  //   router.push(`/videocall/${username as string}y${patient as string}`);
-  // };
 
   const handleProceedToCall = async (
     e: React.MouseEvent<HTMLButtonElement>

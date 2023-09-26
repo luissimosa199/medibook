@@ -66,12 +66,12 @@ export type SocketContextType = {
   setRoomName: Dispatch<SetStateAction<string | null>>;
   roomName: string | null;
   chatLoaded: boolean;
-  duration: number;
+  duration?: number;
 };
 
 export type ContextProviderProps = {
   children: React.ReactNode;
-  duration: number;
+  duration?: number;
 };
 
 export type CallType = {
