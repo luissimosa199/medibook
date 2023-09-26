@@ -55,7 +55,7 @@ export default async function handler(
       }
 
       const updatedUser = await PatientModel.findOneAndUpdate(
-        { _id: userId },
+        { _id: queryId },
         { $push: { photos: { $each: photos } } },
         { new: true }
       ).select("photos");
@@ -73,14 +73,14 @@ export default async function handler(
       }
 
       const deletedUserPhoto = new DeletedUserPhotoModel({
-        user: userId,
+        user: queryId,
         url: photo,
       });
 
       await deletedUserPhoto.save();
 
       const updatedUser = await PatientModel.findOneAndUpdate(
-        { _id: userId },
+        { _id: queryId },
         { $pull: { photos: photo } },
         { new: true }
       ).select("photos");

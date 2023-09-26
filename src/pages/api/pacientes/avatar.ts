@@ -17,8 +17,16 @@ export default async function handler(
   await dbConnect();
 
   const { userId } = req.query;
+
   if (!userId) {
     return res.status(400).json({ error: "UserId is required" });
+  }
+
+  let queryId;
+  if (mongoose.Types.ObjectId.isValid(userId as string)) {
+    queryId = new mongoose.Types.ObjectId(userId as string);
+  } else {
+    queryId = userId as string;
   }
 
   try {
@@ -32,7 +40,7 @@ export default async function handler(
       }
 
       const updatedUser = await PatientModel.findOneAndUpdate(
-        { _id: userId },
+        { _id: queryId },
         { $set: { image } },
         { new: true }
       ).select("image");
@@ -43,13 +51,6 @@ export default async function handler(
 
       return res.status(200).json({ image: updatedUser.image });
     } else if (req.method === "GET") {
-      let queryId;
-      if (mongoose.Types.ObjectId.isValid(userId as string)) {
-        queryId = new mongoose.Types.ObjectId(userId as string);
-      } else {
-        queryId = userId as string;
-      }
-
       const user = await PatientModel.findOne({ _id: queryId }).select("image");
       if (!user) {
         return res.status(404).json({ error: "User not found" });

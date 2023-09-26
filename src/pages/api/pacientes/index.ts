@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dbConnect from "../../../db/dbConnect";
-import { PatientModel } from "@/db/models";
+import { DeletedPatientModel, PatientModel } from "@/db/models";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import mongoose from "mongoose";
@@ -53,6 +53,16 @@ export default async function handler(
       } else {
         queryId = id as string;
       }
+
+      const patient = await PatientModel.findOne({ _id: queryId });
+      const patientObject = patient?.toObject();
+
+      const saveDeletedPatient = new DeletedPatientModel({
+        ...patientObject,
+        deletedAt: new Date(),
+      });
+
+      await saveDeletedPatient.save();
 
       const deletedPatient = await PatientModel.findOneAndRemove({
         _id: queryId,
