@@ -1,9 +1,7 @@
 import ChatOnlyPage from "@/components/ChatOnlyPage";
-import VideoCallChatBox from "@/components/VideoCallChatBox";
-import { SocketContext } from "@/context/VideoCallContext";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect } from "react";
+import React from "react";
 
 const DynamicContextProvider = dynamic(
   () => import("@/context/VideoCallContext").then((mod) => mod.ContextProvider),
@@ -22,7 +20,7 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mb-2">
       <DynamicContextProvider>
         <ChatOnlyPage channelName={channelName} />
       </DynamicContextProvider>

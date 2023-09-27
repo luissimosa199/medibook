@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 export interface TimeLineEntryData {
   url: string;
@@ -67,6 +67,10 @@ export type SocketContextType = {
   roomName: string | null;
   chatLoaded: boolean;
   duration?: number;
+  handleUploadImages?: (event: ChangeEvent<HTMLInputElement>) => Promise<void>;
+  files: string[];
+  previews: string[];
+  submitBtnDisabled: boolean;
 };
 
 export type ContextProviderProps = {
@@ -87,8 +91,18 @@ export type UserInRoom = {
   room: string;
 };
 
+export type ChatFileObject = {
+  text: string;
+  files: { url: string; type: string }[];
+};
+
 export type ChatMessage = {
+  room?: string;
   username: string;
-  message: string;
+  message?: string;
+  files?: {
+    url: string;
+    type: string;
+  }[];
   timestamp?: Date;
 };

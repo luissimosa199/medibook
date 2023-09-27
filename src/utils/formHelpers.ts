@@ -27,8 +27,8 @@ export const uploadImages = async (event: ChangeEvent<HTMLInputElement>) => {
           file = convertedFile as File;
         }
 
-        // Upload to Cloudinary
-        const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+        // Upload to Cloudinary https://api.cloudinary.com/v1_1/demo/image/upload
+        const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", "qxkzlm62");
@@ -226,12 +226,20 @@ export const sendData = async (
   }
 };
 
-export const editData = async (data: Omit<TimelineFormInputs, "createdAt">, username?: string) => {
+export const editData = async (
+  data: Omit<TimelineFormInputs, "createdAt">,
+  username?: string
+) => {
   try {
-    const response = await fetch(`/api/timeline/${data._id}${username ? "?username=" + encodeURIComponent(username as string) : ""}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `/api/timeline/${data._id}${
+        username ? "?username=" + encodeURIComponent(username as string) : ""
+      }`,
+      {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       Swal.fire({
@@ -289,16 +297,19 @@ export const createDataObject = (
   tagsList: string[],
   linksList: InputItem[],
   session?: Session | null,
-  patientData?: { pacientName: string, pacientId: string }
+  patientData?: { pacientName: string; pacientId: string }
 ) => {
-
   return {
     mainText: data.mainText || "",
     photo: photos,
     length: photos.length,
     tags: tagsList,
-    authorId: patientData ? patientData.pacientId : session?.user?.email ?? "defaultId",
-    authorName: patientData ? patientData.pacientName : session?.user?.name ?? "defaultName",
+    authorId: patientData
+      ? patientData.pacientId
+      : session?.user?.email ?? "defaultId",
+    authorName: patientData
+      ? patientData.pacientName
+      : session?.user?.name ?? "defaultName",
     links: linksList,
   };
 };

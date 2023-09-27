@@ -36,13 +36,13 @@ app.prepare().then(() => {
       socket.emit("usersInRoom", usersInRoom);
     });
 
-    socket.on("sendMessage", ({ room, username, message }) => {
-        const timestamp = Date.now();
-        if (!roomMessages[room]) {
-          roomMessages[room] = [];
-        }
-        roomMessages[room].push({ timestamp, username, message });
-        io.to(room).emit("roomMessages", roomMessages[room]);
+    socket.on("sendMessage", ({ room, username, message, files }) => {
+      const timestamp = Date.now();
+      if (!roomMessages[room]) {
+        roomMessages[room] = [];
+      }
+      roomMessages[room].push({ timestamp, username, message, files });
+      io.to(room).emit("roomMessages", roomMessages[room]);
     });
 
     socket.on("getRoomMessages", (room, callback) => {

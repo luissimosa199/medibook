@@ -1,5 +1,6 @@
 import { ChatMessage } from "@/types";
 import React, { useEffect, useRef } from "react";
+import ChatMessageFiles from "./ChatMessageFiles";
 
 const ChatBox = ({ messages }: { messages: ChatMessage[] }) => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
@@ -12,20 +13,27 @@ const ChatBox = ({ messages }: { messages: ChatMessage[] }) => {
 
   return (
     <div
-      className="h-4/5 flex-shrink-0 overflow-y-auto mb-1"
+      className="h-4/5 overflow-y-auto mb-1"
       ref={chatBoxRef}
     >
       <div className="flex flex-col items-center justify-center px-2">
         {messages &&
           messages.map((e, i) => {
+            // Check if the message has files
+            const hasFiles = e.files && e.files.length > 0;
+
             return (
-              <p
-                className="bg-white w-full"
+              <div
                 key={i}
+                className="bg-white w-full"
               >
-                <strong className="text-blue-500">{e.username}:</strong>
-                {e.message}
-              </p>
+                <div className="flex items-center">
+                  <strong className="text-blue-500 mr-2">{e.username}:</strong>
+                  <p>{e.message}</p>
+                </div>
+
+                {hasFiles && <ChatMessageFiles files={e.files} />}
+              </div>
             );
           })}
       </div>

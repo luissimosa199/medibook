@@ -145,7 +145,7 @@ const VideoCallPage = () => {
   }, []);
 
   return (
-    <div className="w-full h-[95vh] grid grid-rows-3 grid-cols-5 gap-2 relative">
+    <div className="w-full min-h-[95vh] grid grid-rows-3 grid-cols-5 gap-2 relative">
       <div className="border-2 col-span-5 row-span-2 flex justify-center gap-1">
         {/* Remote Streams */}
         {remoteUsers.map((user) => (
@@ -197,7 +197,7 @@ const VideoCallPage = () => {
             </div>
           </div>
 
-          <div className="h-full pb-2 flex flex-col">
+          <div className="">
             <VideoCallChatBox />
           </div>
         </div>

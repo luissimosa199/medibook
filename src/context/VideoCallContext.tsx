@@ -1,13 +1,21 @@
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  ChangeEvent,
+} from "react";
 import { Socket, io } from "socket.io-client";
 import { useSession } from "next-auth/react";
 import {
+  ChatFileObject,
   ChatMessage,
   ContextProviderProps,
   SocketContextType,
   UserInRoom,
 } from "@/types";
 import { saveChat } from "@/utils/saveChat";
+import { handleNewFileChange, uploadImages } from "@/utils/formHelpers";
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
@@ -31,6 +39,10 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
   const [message, setMessage] = useState<string>("");
   const [roomName, setRoomName] = useState<string | null>(null);
   const [chatLoaded, setChatLoaded] = useState<boolean>(false);
+
+  const [files, setFiles] = useState<string[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [submitBtnDisabled, setSubmitBtnDisabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (socket) {
@@ -75,15 +87,50 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
     }
   }, [session]);
 
-  const sendMessage = useCallback(() => {
-    if (socket && message.trim()) {
-      socket.emit("sendMessage", { room: roomName, message, username: name });
-      if (roomName) {
-        saveChat({ room: roomName, newMessage: { message, username: name } });
-      }
-      setMessage(""); // Clear the input after sending
+  const handleUploadImages = async (event: ChangeEvent<HTMLInputElement>) => {
+    setSubmitBtnDisabled(true);
+    const newPreviews = await handleNewFileChange(event);
+    setPreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+
+    try {
+      const uploadedUrls = await uploadImages(event);
+
+      // If you want to set the URLs to some state
+      setFiles((prevFiles) => [...prevFiles, ...(uploadedUrls as string[])]);
+    } catch (error) {
+      console.error("Error uploading images:", error);
     }
-  }, [socket, message, roomName, name, setMessage]);
+
+    setSubmitBtnDisabled(false);
+    event.target.value = "";
+  };
+
+  const sendMessage = useCallback(() => {
+    let chatContent: ChatMessage = {
+      room: roomName as string,
+      username: name,
+      message: message,
+      files: files.map((e) => {
+        return { url: e, type: e.slice(-3) };
+      }),
+    };
+
+    if (
+      socket &&
+      (chatContent.message?.trim() !== "" ||
+        (chatContent.files && chatContent.files.length > 0))
+    ) {
+      socket.emit("sendMessage", chatContent);
+
+      if (roomName) {
+        saveChat({ room: roomName, newMessage: chatContent });
+      }
+
+      setMessage("");
+      setFiles([]);
+      setPreviews([]);
+    }
+  }, [name, files, message, socket, roomName]);
 
   return (
     <SocketContext.Provider
@@ -99,6 +146,10 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
         roomName,
         chatLoaded,
         duration,
+        handleUploadImages,
+        files,
+        previews,
+        submitBtnDisabled,
       }}
     >
       {children}

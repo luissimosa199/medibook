@@ -6,6 +6,7 @@ import router from "next/router";
 import React, { FunctionComponent } from "react";
 import Image from "next/image";
 import { Session } from "next-auth";
+import Swal from "sweetalert2";
 
 interface UserInterface {
   paciente: { name: string; email: string; image: string; _id: string };
@@ -53,9 +54,27 @@ const PatientCard: FunctionComponent<UserInterface> = ({
           )}
           <button
             className="hover:text-red-500 transition"
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault();
-              deleteMutation.mutate(paciente._id);
+
+              const result = await Swal.fire({
+                title: "Estas seguro?",
+                text: "Se borrará el paciente",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Borrar",
+              });
+
+              if (result.isConfirmed) {
+                deleteMutation.mutate(paciente._id);
+                Swal.fire(
+                  "Borrado!",
+                  "El paciente ha sido eliminado",
+                  "success"
+                );
+              }
             }}
           >
             <FontAwesomeIcon

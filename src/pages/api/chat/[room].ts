@@ -13,7 +13,9 @@ export default async function handler(
     const { limit: limitStr, excludeTimestamps } = req.query;
 
     const limit = parseInt((limitStr as string) || "10");
-    const excludedTimestamps = (excludeTimestamps as string).split(',').map(ts => new Date(Number(ts)).toISOString());
+    const excludedTimestamps = (excludeTimestamps as string)
+      .split(",")
+      .map((ts) => new Date(Number(ts)).toISOString());
     const chat = await VideoCallChatModel.findById(room);
 
     if (chat && chat.messages) {
@@ -40,6 +42,7 @@ export default async function handler(
               timestamp: body.timestamp,
               user: body.user,
               message: body.message,
+              files: body.files,
             },
           },
         },
@@ -50,7 +53,7 @@ export default async function handler(
       });
 
       if (updateChat) {
-        res.status(200).json(updateChat);
+        res.status(200).json(body);
       }
     } else {
       const newChat = new VideoCallChatModel({
