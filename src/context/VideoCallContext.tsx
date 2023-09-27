@@ -8,7 +8,6 @@ import React, {
 import { Socket, io } from "socket.io-client";
 import { useSession } from "next-auth/react";
 import {
-  ChatFileObject,
   ChatMessage,
   ContextProviderProps,
   SocketContextType,
@@ -21,6 +20,7 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 const ContextProvider: React.FC<ContextProviderProps> = ({
   duration,
+  chatBoxVariant,
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -31,7 +31,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
     setSocket(newSocket);
   }
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [name, setName] = useState<string>("");
   const [usersInRoom, setUsersInRoom] = useState<UserInRoom[]>([]);
@@ -55,10 +55,10 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
         setMessages(roomMessages);
       });
 
-      if (roomName && session && session.user) {
+      if (roomName && status !== "loading") {
         // Join the room
         const roomToJoin = roomName; // Replace with your actual room name
-        const userName = session.user.name; // Replace with the actual user's name
+        const userName = session?.user?.name || "Invitado"; // Replace with the actual user's name
         socket.emit("joinRoomOnConnect", roomToJoin, userName, () => {
           console.log(`Joined the room: ${roomToJoin}`);
         });
@@ -84,6 +84,8 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
   useEffect(() => {
     if (session && session.user) {
       setName(session?.user?.name as string);
+    } else {
+      setName("Invitado");
     }
   }, [session]);
 
@@ -150,6 +152,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
         files,
         previews,
         submitBtnDisabled,
+        chatBoxVariant,
       }}
     >
       {children}

@@ -71,11 +71,13 @@ export type SocketContextType = {
   files: string[];
   previews: string[];
   submitBtnDisabled: boolean;
+  chatBoxVariant: "videochat" | "textchat";
 };
 
 export type ContextProviderProps = {
   children: React.ReactNode;
   duration?: number;
+  chatBoxVariant: "videochat" | "textchat";
 };
 
 export type CallType = {

@@ -1,4 +1,3 @@
-import session from "@/pages/session";
 import {
   faTrashCan,
   faPenToSquare,

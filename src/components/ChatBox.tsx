@@ -2,7 +2,13 @@ import { ChatMessage } from "@/types";
 import React, { useEffect, useRef } from "react";
 import ChatMessageFiles from "./ChatMessageFiles";
 
-const ChatBox = ({ messages }: { messages: ChatMessage[] }) => {
+const ChatBox = ({
+  messages,
+  chatBoxVariant = "videochat",
+}: {
+  messages: ChatMessage[];
+  chatBoxVariant?: "videochat" | "textchat";
+}) => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -13,7 +19,9 @@ const ChatBox = ({ messages }: { messages: ChatMessage[] }) => {
 
   return (
     <div
-      className="h-4/5 overflow-y-auto mb-1"
+      className={`${
+        chatBoxVariant === "videochat" ? "h-52" : "h-[30rem] "
+      } overflow-y-auto`}
       ref={chatBoxRef}
     >
       <div className="flex flex-col items-center justify-center px-2">

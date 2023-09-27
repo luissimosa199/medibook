@@ -35,7 +35,10 @@ const VideoCall = ({ currentCall }: { currentCall: { duration: number } }) => {
   }
 
   return (
-    <DynamicContextProvider duration={currentCall.duration}>
+    <DynamicContextProvider
+      chatBoxVariant="videochat"
+      duration={currentCall.duration}
+    >
       <VideoCallPage />
     </DynamicContextProvider>
   );

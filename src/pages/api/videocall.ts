@@ -45,9 +45,17 @@ export default async function handler(
 
     if (chat) {
       if (chat.currentCall) {
-        return res
-          .status(400)
-          .json({ error: "A call is already in progress." });
+        const currentTime = new Date().getTime();
+        const chatInitTime = new Date(chat.currentCall.initTime).getTime();
+        const chatDuration = chat.currentCall.duration;
+        const endTime = chatInitTime + chatDuration;
+        const timeLeft = endTime - currentTime;
+
+        if (timeLeft > 0) {
+          return res
+            .status(400)
+            .json({ error: "A call is already in progress." });
+        }
       }
 
       const updateChat = await VideoCallChatModel.findByIdAndUpdate(

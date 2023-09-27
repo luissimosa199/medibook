@@ -20,11 +20,15 @@ const VideoCallChatBox = () => {
     handleUploadImages,
     previews,
     submitBtnDisabled,
+    chatBoxVariant,
   } = context;
 
   return (
-    <div className="flex flex-col min-h-full">
-      <ChatBox messages={messages} />
+    <div className="flex flex-col">
+      <ChatBox
+        chatBoxVariant={chatBoxVariant}
+        messages={messages}
+      />
 
       <div className="">
         {previews && <ChatMessagePreviews previews={previews} />}

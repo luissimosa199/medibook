@@ -20,8 +20,8 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="min-h-screen mb-2">
-      <DynamicContextProvider>
+    <div className="">
+      <DynamicContextProvider chatBoxVariant="textchat">
         <ChatOnlyPage channelName={channelName} />
       </DynamicContextProvider>
     </div>

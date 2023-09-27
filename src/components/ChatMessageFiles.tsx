@@ -33,14 +33,23 @@ const ChatMessageFiles = ({
         if (["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(file.type)) {
           // Render image tag for image types
           return (
-            <Image
+            <button
+              onClick={() =>
+                downloadFileFromCloudinary(
+                  file.url,
+                  `file_${index}.${file.type}`
+                )
+              }
               key={index}
-              src={file.url}
-              width={80}
-              height={80}
-              alt={`File ${index}`}
-              className="rounded shadow-md hover:scale-110 hover:shadow-lg transition-all"
-            />
+            >
+              <Image
+                src={file.url}
+                width={80}
+                height={80}
+                alt={`File ${index}`}
+                className="rounded shadow-md hover:scale-110 hover:shadow-lg transition-all"
+              />
+            </button>
           );
         } else if (
           ["mp4", "mpeg", "ogv", "webm", "3gp", "3g2"].includes(file.type)
