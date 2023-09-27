@@ -1,5 +1,9 @@
 import session from "@/pages/session";
-import { faTrashCan, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrashCan,
+  faPenToSquare,
+  faVideoCamera,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import router from "next/router";
@@ -25,7 +29,7 @@ const PatientCard: FunctionComponent<UserInterface> = ({
       className="py-4 space-y-4"
     >
       <div className="flex items-center gap-4">
-        <div className="rounded-full h-[150px] w-[150px] border-2 overflow-hidden relative">
+        <div className="rounded-full h-[110px] w-[110px] border-2 overflow-hidden relative">
           <Link href={`/pacientes/${paciente._id}`}>
             <Image
               alt={`foto de ${paciente.name}`}
@@ -39,18 +43,24 @@ const PatientCard: FunctionComponent<UserInterface> = ({
           <p className="text-lg font-medium">{paciente.name}</p>
         </div>
 
-        {/* <Link href="/usuarios/id">Ver publicaciones</Link> */}
-
         <div className="ml-auto flex gap-2">
           {session?.user && (
-            <Link
-              className="underline text-lg mb-2 hover:opacity-70"
-              href={`/videocall/${
-                (session?.user?.email as string).split("@")[0]
-              }y${paciente.name}`}
+            <button
+              className="hover:text-blue-500 transition"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push(
+                  `/videocall/${
+                    (session?.user?.email as string).split("@")[0]
+                  }y${paciente.name}`
+                );
+              }}
             >
-              Iniciar videollamada
-            </Link>
+              <FontAwesomeIcon
+                size="lg"
+                icon={faVideoCamera}
+              />
+            </button>
           )}
           <button
             className="hover:text-red-500 transition"
@@ -62,9 +72,10 @@ const PatientCard: FunctionComponent<UserInterface> = ({
                 text: "Se borrará el paciente",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
                 confirmButtonText: "Borrar",
+                cancelButtonText: "Volver",
               });
 
               if (result.isConfirmed) {
