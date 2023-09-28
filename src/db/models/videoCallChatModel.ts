@@ -34,6 +34,9 @@ class CurrentCall {
   schemaOptions: {
     timestamps: true,
   },
+  options: {
+    allowMixed: 0,
+  },
 })
 export class VideoCallChat {
   @prop()
