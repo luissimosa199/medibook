@@ -56,9 +56,8 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
       });
 
       if (roomName && status !== "loading") {
-        // Join the room
-        const roomToJoin = roomName; // Replace with your actual room name
-        const userName = session?.user?.name || "Invitado"; // Replace with the actual user's name
+        const roomToJoin = roomName;
+        const userName = session?.user?.name || "Invitado";
         socket.emit("joinRoomOnConnect", roomToJoin, userName, () => {
           console.log(`Joined the room: ${roomToJoin}`);
         });
@@ -79,7 +78,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomName]);
+  }, [roomName, status]);
 
   useEffect(() => {
     if (session && session.user) {
