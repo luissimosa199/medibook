@@ -9,6 +9,7 @@ import router from "next/router";
 import React, { FunctionComponent } from "react";
 import { Session } from "next-auth";
 import { CldImage } from "next-cloudinary";
+import { noProfileImage } from "@/utils/noProfileImage";
 
 interface UserInterface {
   paciente: { name: string; email: string; image: string; _id: string };
@@ -29,7 +30,7 @@ const PatientCard: FunctionComponent<UserInterface> = ({
           <Link href={`/pacientes/${paciente._id}`}>
             <CldImage
               alt={`foto de ${paciente.name}`}
-              src={paciente.image || "/noprofile.png"}
+              src={paciente.image || noProfileImage}
               fill
               className="absolute object-cover"
             />

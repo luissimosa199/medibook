@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { noProfileImage } from "@/utils/noProfileImage";
 import { CldImage } from "next-cloudinary";
 
 interface ProfilePictureProps {
@@ -58,7 +59,7 @@ const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({
     <div className={`flex flex-col items-center justify-center`}>
       <Link href="/perfil">
         <CldImage
-          src={(data.image as string) || "/noprofile.png"}
+          src={(data.image as string) || noProfileImage}
           width={w}
           height={h}
           alt={`${userId}'s Avatar`}

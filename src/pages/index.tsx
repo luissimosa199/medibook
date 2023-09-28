@@ -104,11 +104,6 @@ const Mainboard: FunctionComponent = () => {
 
   return (
     <>
-      {/* <UserCard
-        imageSrc="/noprofile.png"
-        name="Anonimo"
-        description="Sin descripcion"
-      /> */}
       <div className="text-center">
         <ProfileButtonsPanel />
       </div>

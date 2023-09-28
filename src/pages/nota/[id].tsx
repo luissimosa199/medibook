@@ -1,33 +1,35 @@
-import TimeLine from '@/components/TimeLine';
-import UserCard from '@/components/UserCard';
-import dbConnect from '@/db/dbConnect';
-import { TimeLineModel } from '@/db/models';
-import { TimelineFormInputs } from '@/types';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import Link from 'next/link';
-import { FunctionComponent, useEffect } from 'react';
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import { authOptions } from '../api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth';
+import TimeLine from "@/components/TimeLine";
+import UserCard from "@/components/UserCard";
+import dbConnect from "@/db/dbConnect";
+import { TimeLineModel } from "@/db/models";
+import { TimelineFormInputs } from "@/types";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import Link from "next/link";
+import { FunctionComponent, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
+import { noProfileImage } from "@/utils/noProfileImage";
 
 interface TimelinePageProps {
   timelineData: TimelineFormInputs | null;
 }
 
-const TimelinePage: FunctionComponent<TimelinePageProps> = ({ timelineData }) => {
-
+const TimelinePage: FunctionComponent<TimelinePageProps> = ({
+  timelineData,
+}) => {
   const router = useRouter();
   const { status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push('/login')
-      return
+      router.push("/login");
+      return;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status]);
 
   if (!timelineData) {
     return <div>Publicación no encontrada</div>;
@@ -36,11 +38,16 @@ const TimelinePage: FunctionComponent<TimelinePageProps> = ({ timelineData }) =>
   return (
     <>
       <div className="border flex justify-center items-center">
-        <Link className="text-xs" href="/">Volver</Link>
+        <Link
+          className="text-xs"
+          href="/"
+        >
+          Volver
+        </Link>
         <h1 className="text-xl text-center font-bold m-4">Nota</h1>
       </div>
       <UserCard
-        imageSrc="/noprofile.png"
+        imageSrc={noProfileImage}
         name="Anonimo"
         description="Sin descripcion"
       />
@@ -66,20 +73,20 @@ const TimelinePage: FunctionComponent<TimelinePageProps> = ({ timelineData }) =>
 
 export default TimelinePage;
 
-export const getServerSideProps: GetServerSideProps<TimelinePageProps> = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<TimelinePageProps> = async (
+  context: GetServerSidePropsContext
+) => {
   try {
-
     const session = await getServerSession(
       context.req,
       context.res,
       authOptions
-    )
+    );
 
     if (!session || !session.user) {
-
       return {
         redirect: {
-          destination: '/login',
+          destination: "/login",
           permanent: false,
         },
       };
@@ -91,7 +98,7 @@ export const getServerSideProps: GetServerSideProps<TimelinePageProps> = async (
 
     const timeline = await TimeLineModel.findOne({
       urlSlug: id,
-      authorId: session.user.email
+      authorId: session.user.email,
     }).lean();
 
     if (!timeline) {
@@ -108,8 +115,8 @@ export const getServerSideProps: GetServerSideProps<TimelinePageProps> = async (
       photo: timeline.photo,
       createdAt: timeline.createdAt.toISOString(),
       tags: timeline.tags || [],
-      authorId: timeline.authorId || '',
-      authorName: timeline.authorName || '',
+      authorId: timeline.authorId || "",
+      authorName: timeline.authorName || "",
       links: timeline.links,
     };
 

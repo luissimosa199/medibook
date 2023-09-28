@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import LastTenUserTimeline from "@/components/LastTenUserTimeline";
 import UserPhotoGallery from "@/components/UserPhotoGallery";
 import ProfileCard from "@/components/ProfileCard";
