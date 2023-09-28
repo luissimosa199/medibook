@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 
 const Videocall = () => {
   const router = useRouter();
@@ -15,6 +15,14 @@ const Videocall = () => {
   const [patient, setPatient] = useState("");
   const [amount, setAmount] = useState("");
   const [time, setTime] = useState("");
+
+  useEffect(() => {
+    if (router.query.name) {
+      setPatient(router.query.name as string);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

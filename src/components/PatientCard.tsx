@@ -64,11 +64,7 @@ const PatientCard: FunctionComponent<UserInterface> = ({
               className="hover:text-blue-500 transition"
               onClick={(e) => {
                 e.preventDefault();
-                router.push(
-                  `/videocall/${
-                    (session?.user?.email as string).split("@")[0]
-                  }y${paciente.name}`
-                );
+                router.push(`/videocall?name=${paciente.name}`);
               }}
             >
               <FontAwesomeIcon
