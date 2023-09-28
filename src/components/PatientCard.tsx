@@ -2,6 +2,7 @@ import {
   faTrashCan,
   faPenToSquare,
   faVideoCamera,
+  faMessage,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -14,13 +15,11 @@ import Swal from "sweetalert2";
 interface UserInterface {
   paciente: { name: string; email: string; image: string; _id: string };
   session: Session | null;
-  deleteMutation: { mutate: (id: string) => void };
 }
 
 const PatientCard: FunctionComponent<UserInterface> = ({
   paciente,
   session,
-  deleteMutation,
 }) => {
   return (
     <li
@@ -45,6 +44,25 @@ const PatientCard: FunctionComponent<UserInterface> = ({
         <div className="ml-auto flex gap-2">
           {session?.user && (
             <button
+              className="hover:text-green-500 transition"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push(
+                  `/chat/${(session?.user?.email as string).split("@")[0]}y${
+                    paciente.name
+                  }`
+                );
+              }}
+            >
+              <FontAwesomeIcon
+                size="lg"
+                icon={faMessage}
+              />
+            </button>
+          )}
+
+          {session?.user && (
+            <button
               className="hover:text-blue-500 transition"
               onClick={(e) => {
                 e.preventDefault();
@@ -61,37 +79,6 @@ const PatientCard: FunctionComponent<UserInterface> = ({
               />
             </button>
           )}
-          <button
-            className="hover:text-red-500 transition"
-            onClick={async (e) => {
-              e.preventDefault();
-
-              const result = await Swal.fire({
-                title: "Estas seguro?",
-                text: "Se borrará el paciente",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Borrar",
-                cancelButtonText: "Volver",
-              });
-
-              if (result.isConfirmed) {
-                deleteMutation.mutate(paciente._id);
-                Swal.fire(
-                  "Borrado!",
-                  "El paciente ha sido eliminado",
-                  "success"
-                );
-              }
-            }}
-          >
-            <FontAwesomeIcon
-              size="lg"
-              icon={faTrashCan}
-            />
-          </button>
 
           <button
             className="hover:text-blue-500 transition"

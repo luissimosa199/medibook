@@ -1,12 +1,17 @@
 import InputList from "@/components/FlexInputList";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const EditPatient = () => {
   const router = useRouter();
   const { id } = router.query;
   const { status } = useSession();
+  const queryClient = useQueryClient();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -56,6 +61,37 @@ const EditPatient = () => {
       setIsLoading(false);
     }
   };
+
+  const deletePatient = async (_id: string) => {
+    const response = await fetch(`/api/pacientes?id=${_id}`, {
+      method: "DELETE",
+    });
+    return response;
+  };
+
+  const deleteMutation = useMutation(
+    async (_id: string) => deletePatient(_id),
+    {
+      onMutate: (_id: string) => {
+        const previousPatientsData = queryClient.getQueryData<any[]>([
+          "pacientes",
+        ]);
+
+        queryClient.setQueryData(["pacientes"], (oldData: any[] | undefined) =>
+          oldData?.filter((patient) => patient._id !== _id)
+        );
+
+        return { previousPatientsData };
+      },
+      onError: (error, variables, context: any) => {
+        console.log(error);
+        queryClient.setQueryData(["pacientes"], context.previousPatientsData);
+      },
+      onSuccess: () => {
+        router.push("/pacientes");
+      },
+    }
+  );
 
   if (!router.isReady || !patient) {
     return <p className="text-xl p-4 min-h-screen">Cargando...</p>;
@@ -153,9 +189,41 @@ const EditPatient = () => {
             </p>
           </div>
         )}
-        <div className="flex flex-col items-center justify-between">
+        <div className="flex flex-row gap-1 items-center justify-between">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-all"
+            className="w-1/3 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-all"
+            type="button"
+            onClick={async (e) => {
+              e.preventDefault();
+
+              const result = await Swal.fire({
+                title: "Estas seguro?",
+                text: "Se borrará el paciente",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Borrar",
+                cancelButtonText: "Volver",
+              });
+
+              if (result.isConfirmed) {
+                deleteMutation.mutate(id as string);
+                Swal.fire(
+                  "Borrado!",
+                  "El paciente ha sido eliminado",
+                  "success"
+                );
+              }
+            }}
+          >
+            <FontAwesomeIcon
+              size="lg"
+              icon={faTrashCan}
+            />
+          </button>
+          <button
+            className=" w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-all"
             type="submit"
             disabled={isLoading}
           >

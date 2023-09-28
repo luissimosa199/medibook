@@ -17,7 +17,6 @@ interface UserInterface {
 const Usuarios = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const queryClient = useQueryClient();
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -30,35 +29,6 @@ const Usuarios = () => {
     }
     return response.json();
   };
-
-  const deletePatient = async (_id: string) => {
-    const response = await fetch(`/api/pacientes?id=${_id}`, {
-      method: "DELETE",
-    });
-    // const data = await response.json();
-    return response;
-  };
-
-  const deleteMutation = useMutation(
-    async (_id: string) => deletePatient(_id),
-    {
-      onMutate: (_id: string) => {
-        const previousPatientsData = queryClient.getQueryData<any[]>([
-          "pacientes",
-        ]);
-
-        queryClient.setQueryData(["pacientes"], (oldData: any[] | undefined) =>
-          oldData?.filter((patient) => patient._id !== _id)
-        );
-
-        return { previousPatientsData };
-      },
-      onError: (error, variables, context: any) => {
-        console.log(error);
-        queryClient.setQueryData(["pacientes"], context.previousPatientsData);
-      },
-    }
-  );
 
   const {
     data: pacientes,
@@ -130,7 +100,6 @@ const Usuarios = () => {
                   key={idx}
                   session={session}
                   paciente={paciente}
-                  deleteMutation={deleteMutation}
                 />
               );
             })
@@ -140,7 +109,6 @@ const Usuarios = () => {
                   key={idx}
                   session={session}
                   paciente={paciente}
-                  deleteMutation={deleteMutation}
                 />
               );
             })}
