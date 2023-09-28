@@ -16,44 +16,33 @@ export default async function handler(
   }
 
   await dbConnect();
+  const { id } = req.query;
+
+  let queryId;
+  if (mongoose.Types.ObjectId.isValid(id as string)) {
+    queryId = new mongoose.Types.ObjectId(id as string);
+  } else {
+    queryId = id as string;
+  }
 
   try {
     if (req.method === "GET") {
-      const { id } = req.query;
-
       if (id) {
-        let queryId;
-        if (mongoose.Types.ObjectId.isValid(id as string)) {
-          queryId = new mongoose.Types.ObjectId(id as string);
-        } else {
-          queryId = id as string;
-        }
         const patient = await PatientModel.findOne({ _id: queryId });
         return res.status(200).json(patient);
       }
 
       const patients = await PatientModel.find({ doctor: session.user.email })
-        .select("email name image tags")
+        .select("email name image tags isArchived")
         .sort({ createdAt: -1 });
       if (!patients) {
         return res.status(404).json({ error: "No patients found" });
       }
-
       return res.status(200).json(patients);
     } else if (req.method === "POST") {
       // migrar register?
       console.log("POST");
     } else if (req.method === "DELETE") {
-      const { id } = req.query;
-
-      let queryId;
-
-      if (mongoose.Types.ObjectId.isValid(id as string)) {
-        queryId = new mongoose.Types.ObjectId(id as string);
-      } else {
-        queryId = id as string;
-      }
-
       const patient = await PatientModel.findOne({ _id: queryId });
       const patientObject = patient?.toObject();
 
@@ -69,37 +58,53 @@ export default async function handler(
       });
 
       if (deletedPatient) {
-        res.status(204).end(); // 204 No Content
+        res.status(204).end();
       } else {
         res.status(404).json({ message: "Patient not found" });
       }
     } else if (req.method === "PUT") {
-      const { id } = req.query;
-
-      let queryId;
-
-      if (mongoose.Types.ObjectId.isValid(id as string)) {
-        queryId = new mongoose.Types.ObjectId(id as string);
-      } else {
-        queryId = id as string;
-      }
-
       try {
-        const updateData = req.body; // Assuming the request body contains updated patient data
+        const updateData = req.body;
 
         const updatedPatient = await PatientModel.findOneAndUpdate(
           { _id: queryId },
           updateData,
           {
-            new: true, // Returns the updated document
+            new: true,
           }
         );
 
         if (updatedPatient) {
-          res.status(200).json(updatedPatient); // Send back the updated patient data
+          res.status(200).json(updatedPatient);
         } else {
           res.status(404).json({ message: "Patient not found" });
         }
+      } catch (error) {
+        res
+          .status(500)
+          .json({ message: "Internal server error", error: error });
+      }
+    } else if (req.method === "PATCH") {
+      try {
+        const patient = await PatientModel.findById(queryId);
+
+        if (!patient) {
+          return res.status(404).json({ message: "Patient not found" });
+        }
+
+        const newIsArchivedStatus = patient.isArchived
+          ? !patient.isArchived
+          : true;
+
+        const updatedPatient = await PatientModel.findOneAndUpdate(
+          { _id: queryId },
+          { isArchived: newIsArchivedStatus },
+          {
+            new: true,
+          }
+        );
+
+        res.status(200).json(updatedPatient);
       } catch (error) {
         res
           .status(500)

@@ -33,6 +33,9 @@ export class Patient {
   @prop()
   photos?: string[];
 
+  @prop({ default: false })
+  isArchived?: boolean;
+
   @prop({ required: true })
   doctor: string;
 }

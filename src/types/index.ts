@@ -53,6 +53,22 @@ export interface User {
   photos: string[];
 }
 
+// PATIENTS
+
+export interface Patient {
+  _id: string;
+  name: string;
+  email?: string;
+  tlf?: string;
+  details?: string;
+  tags?: string[];
+  photos?: string[];
+  doctor: string;
+  createdAt: string;
+  updatedAt: string;
+  isArchived?: boolean;
+}
+
 // SOCKETS
 
 export type SocketContextType = {

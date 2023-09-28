@@ -1,10 +1,11 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import PatientCard from "@/components/PatientCard";
 import { useState } from "react";
 import PatientsFilters from "@/components/PatientsFilters";
+import { Patient } from "@/db/models/patientModel";
 
 interface UserInterface {
   name: string;
@@ -12,6 +13,7 @@ interface UserInterface {
   image: string;
   _id: string;
   tags: string[];
+  isArchived: boolean;
 }
 
 const Usuarios = () => {
@@ -20,22 +22,24 @@ const Usuarios = () => {
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [nameFilter, setNameFilter] = useState("");
+  const [showArchived, setShowArchived] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchPatients = async () => {
     const response = await fetch("/api/pacientes", {
       method: "GET",
     });
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-    return response.json();
+    const data = response.json();
+    return data;
   };
 
   const {
     data: pacientes,
     error,
     isLoading,
-  } = useQuery(["pacientes"], fetchUsers);
+  } = useQuery(["pacientes"], fetchPatients);
 
   if (status === "unauthenticated") {
     router.push("/login");
@@ -73,14 +77,36 @@ const Usuarios = () => {
   ) as string[];
 
   const filteredPatients = pacientes
-    .filter((paciente: UserInterface) => {
-      if (nameFilter) {
-        return paciente.name.toLowerCase().includes(nameFilter.toLowerCase());
+    .filter((paciente: Patient) => {
+      // If no filters are applied, take archived status into account
+      if (!nameFilter && selectedTags.length === 0) {
+        if (showArchived) {
+          return paciente.isArchived === true;
+        } else {
+          return paciente.isArchived !== true; // handles both undefined and false cases
+        }
       }
-      return true;
+      return true; // If any filter is applied, we don't filter out by archived status here.
     })
     .filter((paciente: UserInterface) => {
-      return selectedTags.every((tag) => paciente.tags.includes(tag));
+      // Handle name filtering
+      return nameFilter
+        ? paciente.name.toLowerCase().includes(nameFilter.toLowerCase())
+        : true;
+    })
+    .filter((paciente: UserInterface) => {
+      // Handle tag filtering
+      return selectedTags.length > 0
+        ? selectedTags.every((tag) => paciente.tags.includes(tag))
+        : true;
+    })
+    .sort((a: Patient, b: Patient) => {
+      // If 'a' is archived and 'b' is not, 'a' comes last
+      if (a.isArchived && !b.isArchived) return 1;
+      // If 'b' is archived and 'a' is not, 'b' comes last
+      if (b.isArchived && !a.isArchived) return -1;
+      // Otherwise, no change in order
+      return 0;
     });
 
   return (
@@ -99,12 +125,23 @@ const Usuarios = () => {
           setSelectedTags={setSelectedTags}
         />
 
-        <Link
-          className="w-fit inline-flex items-center px-4 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-800 transition ease-in-out duration-150"
-          href="/pacientes/register"
-        >
-          Registrar nuevo paciente
-        </Link>
+        <div className="flex justify-between">
+          <Link
+            className="w-fit inline-flex items-center p-4 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-800 transition ease-in-out duration-150"
+            href="/pacientes/register"
+          >
+            Registrar nuevo paciente
+          </Link>
+
+          <button
+            className="w-fit inline-flex items-center p-4 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-800 transition ease-in-out duration-150"
+            onClick={() => setShowArchived(!showArchived)}
+          >
+            {showArchived
+              ? "Mostrar pacientes activos"
+              : "Mostrar pacientes archivados"}
+          </button>
+        </div>
       </div>
 
       <ul className="divide-y divide-gray-200">
@@ -116,25 +153,15 @@ const Usuarios = () => {
           </li>
         )}
 
-        {selectedTags.length > 0 || nameFilter
-          ? filteredPatients.map((paciente: UserInterface, idx: number) => {
-              return (
-                <PatientCard
-                  key={idx}
-                  session={session}
-                  paciente={paciente}
-                />
-              );
-            })
-          : pacientes.map((paciente: UserInterface, idx: number) => {
-              return (
-                <PatientCard
-                  key={idx}
-                  session={session}
-                  paciente={paciente}
-                />
-              );
-            })}
+        {filteredPatients.map((paciente: UserInterface, idx: number) => {
+          return (
+            <PatientCard
+              key={idx}
+              session={session}
+              paciente={paciente}
+            />
+          );
+        })}
       </ul>
     </div>
   );
