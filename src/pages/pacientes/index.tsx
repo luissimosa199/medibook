@@ -19,6 +19,7 @@ const Usuarios = () => {
   const { data: session, status } = useSession();
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [nameFilter, setNameFilter] = useState("");
 
   const fetchUsers = async () => {
     const response = await fetch("/api/pacientes", {
@@ -71,18 +72,40 @@ const Usuarios = () => {
     new Set(pacientes.flatMap((e: UserInterface) => e.tags))
   ) as string[];
 
-  const filteredPatients = pacientes.filter((paciente: UserInterface) => {
-    return selectedTags.every((tag) => paciente.tags.includes(tag));
-  });
+  const filteredPatients = pacientes
+    .filter((paciente: UserInterface) => {
+      if (nameFilter) {
+        return paciente.name.toLowerCase().includes(nameFilter.toLowerCase());
+      }
+      return true;
+    })
+    .filter((paciente: UserInterface) => {
+      return selectedTags.every((tag) => paciente.tags.includes(tag));
+    });
 
   return (
     <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen">
-      <Link href="/pacientes/register">Registrar nuevo paciente</Link>
+      <div className="flex flex-col">
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          className="p-2 mt-4 border rounded"
+          value={nameFilter}
+          onChange={(e) => setNameFilter(e.target.value)}
+        />
 
-      <PatientsFilters
-        tags={tags}
-        setSelectedTags={setSelectedTags}
-      />
+        <PatientsFilters
+          tags={tags}
+          setSelectedTags={setSelectedTags}
+        />
+
+        <Link
+          className="w-fit inline-flex items-center px-4 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-800 transition ease-in-out duration-150"
+          href="/pacientes/register"
+        >
+          Registrar nuevo paciente
+        </Link>
+      </div>
 
       <ul className="divide-y divide-gray-200">
         {pacientes.length === 0 && (
@@ -93,7 +116,7 @@ const Usuarios = () => {
           </li>
         )}
 
-        {selectedTags.length > 0
+        {selectedTags.length > 0 || nameFilter
           ? filteredPatients.map((paciente: UserInterface, idx: number) => {
               return (
                 <PatientCard

@@ -17,12 +17,6 @@ const Navbar = () => {
       </div>
 
       <div className="w-full justify-center flex items-center">
-        {/* <Link
-          href="/"
-          className="normal-case text-center text-base md:text-xl"
-        >
-          Panel Doxadoctor
-        </Link> */}
         <p className="text-3xl text-center">{session?.user?.name}</p>
       </div>
 
