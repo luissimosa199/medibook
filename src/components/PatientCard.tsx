@@ -1,5 +1,4 @@
 import {
-  faTrashCan,
   faPenToSquare,
   faVideoCamera,
   faMessage,
@@ -8,9 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import router from "next/router";
 import React, { FunctionComponent } from "react";
-import Image from "next/image";
 import { Session } from "next-auth";
-import Swal from "sweetalert2";
+import { CldImage } from "next-cloudinary";
 
 interface UserInterface {
   paciente: { name: string; email: string; image: string; _id: string };
@@ -29,7 +27,7 @@ const PatientCard: FunctionComponent<UserInterface> = ({
       <div className="flex items-center gap-4">
         <div className="rounded-full h-[110px] w-[110px] border-2 overflow-hidden relative">
           <Link href={`/pacientes/${paciente._id}`}>
-            <Image
+            <CldImage
               alt={`foto de ${paciente.name}`}
               src={paciente.image || "/noprofile.png"}
               fill
