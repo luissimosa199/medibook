@@ -16,7 +16,6 @@ import {
   createPhotoData,
   handleCaptionChange,
   handleDeleteImage,
-  handleFileChange,
   handleNewFileChange,
   sendData,
   uploadImages,
@@ -57,6 +56,10 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
 
   const queryClient = useQueryClient();
 
+  const queryKey = patientData
+    ? ["timelines", patientData?.pacientId]
+    : [session?.user?.email, "userTimelines"];
+
   const mutation = useMutation(
     async ({
       data,
@@ -81,14 +84,10 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
     {
       onSuccess: async (data) => {
         const response = await data.json();
-        const prevData = queryClient.getQueryData<TimelineFormInputs[]>([
-          "timelines",
-          patientData?.pacientId,
-        ]);
-        queryClient.setQueryData(
-          ["timelines", patientData?.pacientId],
-          [response, ...(prevData || [])]
-        );
+        const prevData =
+          queryClient.getQueryData<TimelineFormInputs[]>(queryKey);
+
+        queryClient.setQueryData(queryKey, [response, ...(prevData || [])]);
       },
 
       onSettled: () => {
@@ -193,15 +192,15 @@ const PrimaryForm: FunctionComponent<PrimaryFormProps> = ({ patientData }) => {
     }
 
     setSubmitBtnDisabled(true);
-    const previewPhotos = createPhotoData(images, imagesCaption);
-    const previewData = createDataObject(
-      data,
-      previewPhotos,
-      tagsList,
-      linksList,
-      session,
-      patientData
-    );
+    // const previewPhotos = createPhotoData(images, imagesCaption);
+    // const previewData = createDataObject(
+    //   data,
+    //   previewPhotos,
+    //   tagsList,
+    //   linksList,
+    //   session,
+    //   patientData
+    // );
 
     let urls: string[] = [];
     if (imageUploadPromise) {

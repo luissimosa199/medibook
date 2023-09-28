@@ -64,7 +64,7 @@ const PatientTimelines: FunctionComponent<PatientTimelinesProps> = ({
       {data && data.length > 0 ? (
         <ul className="divide-y divide-gray-200">
           {data.map((e: TimelineFormInputs) => (
-            <li key={e._id}>
+            <li key={e._id || "new_timeline"}>
               <TimeLine
                 _id={e._id}
                 tags={Array.isArray(e.tags) ? e.tags : [e.tags]}

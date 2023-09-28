@@ -1,81 +1,81 @@
-import dbConnect from "@/db/dbConnect"
-import { UserModel } from "@/db/models/userModel"
-import { User } from "@/types"
-import { GetServerSidePropsContext } from "next"
-import Image from "next/image"
-import { FunctionComponent } from "react"
-import escapeStringRegexp from 'escape-string-regexp';
-import UserPhotos from "@/components/UserPhotos"
-// import useTrackUserAgent from "@/hooks/useTrackUserAgent"
+import dbConnect from "@/db/dbConnect";
+import { UserModel } from "@/db/models/userModel";
+import { User } from "@/types";
+import { GetServerSidePropsContext } from "next";
+import { FunctionComponent } from "react";
+import escapeStringRegexp from "escape-string-regexp";
+import UserPhotos from "@/components/UserPhotos";
+import { noProfileImage } from "@/utils/noProfileImage";
+import { CldImage } from "next-cloudinary";
 
 interface UserPageProps {
-    userData: User | null
+  userData: User | null;
 }
 
 const User: FunctionComponent<UserPageProps> = ({ userData }) => {
-
-    // useTrackUserAgent()
-
-    return (
-        <div className="p-8 bg-gray-50 space-y-12">
-            <div className="flex gap-2 items-center">
-                <h1 className="text-4xl font-bold text-gray-800 border-b-2 pb-3">{userData?.name}</h1>
-            </div>
-            <div className="flex flex-col justify-around items-center border rounded-lg p-6 bg-white shadow-lg">
-                <div className="flex flex-col items-center relative">
-                    <div className="flex flex-col items-center">
-                        <Image
-                            priority
-                            src={(userData?.image as string) || '/noprofile.png'}
-                            width={128}
-                            height={128}
-                            alt={`${userData?.name}'s Avatar`}
-                            className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-5"
-                        />
-
-                    </div>
-                </div>
-
-                <div>
-                    <UserPhotos username={userData?.email as string} />
-                </div>
-
-            </div>
+  return (
+    <div className="p-8 bg-gray-50 space-y-12">
+      <div className="flex gap-2 items-center">
+        <h1 className="text-4xl font-bold text-gray-800 border-b-2 pb-3">
+          {userData?.name}
+        </h1>
+      </div>
+      <div className="flex flex-col justify-around items-center border rounded-lg p-6 bg-white shadow-lg">
+        <div className="flex flex-col items-center relative">
+          <div className="flex flex-col items-center">
+            <CldImage
+              priority
+              src={(userData?.image as string) || noProfileImage}
+              width={128}
+              height={128}
+              alt={`${userData?.name}'s Avatar`}
+              className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-5"
+            />
+          </div>
         </div>
-    )
-}
 
-export default User
+        <div>
+          <UserPhotos username={userData?.email as string} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    try {
-        await dbConnect();
+export default User;
 
-        const { id } = context.query;
-        const safeId = escapeStringRegexp(id as string);
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  try {
+    await dbConnect();
 
-        const user = await UserModel.findOne({ email: new RegExp("^" + safeId) }).select("name email image photos").lean();
+    const { id } = context.query;
+    const safeId = escapeStringRegexp(id as string);
 
-        if (user) {
-            const userData = {
-                name: user.name,
-                email: user.email,
-                image: user.image || "",
-                photos: user.photos || [],
-            }
-            return {
-                props: {
-                    userData,
-                },
-            };
-        }
+    const user = await UserModel.findOne({ email: new RegExp("^" + safeId) })
+      .select("name email image photos")
+      .lean();
 
-        throw new Error('error')
-
-    } catch (error) {
-        console.error(error);
-        return {
-            notFound: true,
-        };
+    if (user) {
+      const userData = {
+        name: user.name,
+        email: user.email,
+        image: user.image || "",
+        photos: user.photos || [],
+      };
+      return {
+        props: {
+          userData,
+        },
+      };
     }
-}
+
+    throw new Error("error");
+  } catch (error) {
+    console.error(error);
+    return {
+      notFound: true,
+    };
+  }
+};
