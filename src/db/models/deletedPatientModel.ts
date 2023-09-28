@@ -2,7 +2,12 @@ import { modelOptions, prop } from "@typegoose/typegoose";
 import { ObjectId } from "mongodb";
 import { nanoid } from "nanoid";
 
-@modelOptions({ schemaOptions: { timestamps: true } })
+@modelOptions({
+  schemaOptions: { timestamps: true },
+  options: {
+    allowMixed: 0,
+  },
+})
 export class DeletedPatient {
   @prop({ default: () => nanoid(9) })
   _id: string | ObjectId;

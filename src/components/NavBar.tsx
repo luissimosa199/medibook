@@ -12,23 +12,23 @@ const Navbar = () => {
 
   return (
     <header className="flex justify-between gap-2 p-2 bg-base-100">
-      <div className="flex items-center">
+      <div className="flex items-center w-1/3">
         <NavBarButton />
       </div>
 
-      <div className="w-fit justify-center flex items-center">
-        <Link
+      <div className="w-full justify-center flex items-center">
+        {/* <Link
           href="/"
           className="normal-case text-center text-base md:text-xl"
         >
           Panel Doxadoctor
-        </Link>
+        </Link> */}
+        <p className="text-3xl text-center">{session?.user?.name}</p>
       </div>
 
-      <div className="flex gap-1 md:gap-2 items-center justify-end w-fit md:w-1/3:">
+      <div className="flex gap-1 md:gap-2 items-center justify-end w-1/3">
         {session ? (
           <>
-            <p className="text-3xl">{session?.user?.name}</p>
             <ProfilePicture
               type="user"
               w={70}
