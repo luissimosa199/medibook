@@ -21,10 +21,20 @@ const VideoCallChatBox = () => {
     previews,
     submitBtnDisabled,
     chatBoxVariant,
+    fetchNextPage,
+    hasNextPage,
   } = context;
 
   return (
     <div className="flex flex-col">
+      {hasNextPage && (
+        <button
+          onClick={() => fetchNextPage()}
+          className="my-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+        >
+          Cargar mensajes anteriores
+        </button>
+      )}
       <ChatBox
         chatBoxVariant={chatBoxVariant}
         messages={messages}

@@ -10,7 +10,7 @@ export async function saveChat({ room, newMessage }: SaveChatParams) {
     const response = await fetch(`/api/chat/${room}`, {
       method: "POST",
       body: JSON.stringify({
-        timestamp: new Date().toISOString(),
+        timestamp: newMessage.timestamp?.toISOString(),
         user: newMessage.username,
         message: newMessage.message,
         files: newMessage.files, // send the files array
@@ -18,7 +18,7 @@ export async function saveChat({ room, newMessage }: SaveChatParams) {
     });
 
     if (response.ok) {
-      console.log("Message saved successfully", new Date());
+      return;
     } else {
       const responseData = await response.json();
       console.error("Error saving message:", responseData);

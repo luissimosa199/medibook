@@ -10,23 +10,40 @@ export default async function handler(
   const room = req.query.room as string;
 
   if (req.method === "GET") {
-    const { limit: limitStr, excludeTimestamps } = req.query;
+    const { limit: limitStr, beforeTimestamp } = req.query;
+
+    if (!room || room === "null") {
+      return res.status(400).json({ error: "Invalid room name provided." });
+    }
 
     const limit = parseInt((limitStr as string) || "10");
-    const excludedTimestamps = (excludeTimestamps as string)
-      .split(",")
-      .map((ts) => new Date(Number(ts)).toISOString());
+    const beforeDate = beforeTimestamp
+      ? new Date(Number(beforeTimestamp)).toISOString()
+      : null;
     const chat = await VideoCallChatModel.findById(room);
 
     if (chat && chat.messages) {
-      const filteredMessages = chat.messages.filter(
-        (msg) => !excludedTimestamps.includes(msg.timestamp)
+      // Ensure messages are sorted by timestamp in descending order
+      const sortedMessages = chat.messages.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       );
-      const lastMessages = filteredMessages.slice(-limit);
 
-      res.status(200).json(lastMessages);
-    } else {
-      res.status(404).json({ error: "Chat not found" });
+      // Filter messages that are newer than the provided timestamp
+      const filteredMessages = beforeDate
+        ? sortedMessages.filter(
+            (msg) =>
+              new Date(msg.timestamp).getTime() < new Date(beforeDate).getTime()
+          )
+        : sortedMessages;
+
+      // Take the first 'limit' number of messages from the filtered list
+      const nextMessages = filteredMessages.slice(0, limit).reverse();
+
+      const oldestTimestamp =
+        nextMessages.length > 0 ? nextMessages[0].timestamp : null;
+
+      res.status(200).json({ messages: nextMessages, oldestTimestamp });
     }
   } else if (req.method === "POST") {
     const body = JSON.parse(req.body);

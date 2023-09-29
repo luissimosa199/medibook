@@ -15,6 +15,7 @@ import {
 } from "@/types";
 import { saveChat } from "@/utils/saveChat";
 import { handleNewFileChange, uploadImages } from "@/utils/formHelpers";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
@@ -44,6 +45,63 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
   const [previews, setPreviews] = useState<string[]>([]);
   const [submitBtnDisabled, setSubmitBtnDisabled] = useState<boolean>(false);
 
+  const fetchChatMessages = async ({ pageParam }: { pageParam?: string }) => {
+    const beforeTimestamp = pageParam ? pageParam : ""; // Use the oldestTimestamp as the cursor for the next fetch
+
+    if (!roomName) {
+      return;
+    }
+
+    const response = await fetch(
+      `/api/chat/${roomName}?beforeTimestamp=${beforeTimestamp}`,
+      {
+        method: "GET",
+      }
+    );
+
+    return response.json();
+  };
+
+  const { fetchNextPage, hasNextPage } = useInfiniteQuery(
+    ["chatMessages", roomName],
+    fetchChatMessages,
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.oldestTimestamp
+          ? new Date(lastPage.oldestTimestamp).getTime().toString()
+          : false;
+      },
+      onSuccess(data) {
+        const fetchedMessages = data.pages.flatMap((page) => page.messages);
+        setMessages((prevMessages) => {
+          // Convert existing timestamps to Unix timestamps in milliseconds for quick lookup
+          const existingTimestamps = new Set(
+            prevMessages
+              .filter((msg) => msg.timestamp !== undefined)
+              .map((msg) => {
+                // Check if timestamp is already in Unix format or ISO string format
+                return typeof msg.timestamp === "number"
+                  ? msg.timestamp
+                  : new Date(msg.timestamp!).getTime();
+              })
+          );
+
+          // Filter out any fetched messages that already exist based on their timestamp
+          const uniqueFetchedMessages = fetchedMessages
+            .map((msg) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp).getTime(),
+            }))
+            .filter((msg) => !existingTimestamps.has(msg.timestamp));
+
+          return [...uniqueFetchedMessages, ...prevMessages];
+        });
+      },
+      staleTime: 1000 * 60 * 60, // 1 hour, for example
+      refetchInterval: false,
+    }
+  );
+
   useEffect(() => {
     if (socket) {
       // Set up the event listeners
@@ -52,7 +110,19 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
       });
 
       socket.on("roomMessages", (roomMessages) => {
-        setMessages(roomMessages);
+        setMessages((prevMessages) => {
+          // Create a set of existing timestamps for quick lookup
+          const existingTimestamps = new Set(
+            prevMessages.map((msg) => msg.timestamp)
+          );
+
+          // Filter out any roomMessages that already exist based on their timestamp
+          const uniqueRoomMessages = roomMessages.filter(
+            (msg: ChatMessage) => !existingTimestamps.has(msg.timestamp)
+          );
+
+          return [...prevMessages, ...uniqueRoomMessages];
+        });
       });
 
       if (roomName && status !== "loading") {
@@ -61,11 +131,16 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
         socket.emit("joinRoomOnConnect", roomToJoin, userName, () => {
           console.log(`Joined the room: ${roomToJoin}`);
         });
-        socket.emit("sendMessage", {
+
+        const chatContent = {
+          timestamp: new Date(),
           room: roomName,
           message: `${userName} se ha conectado al chat`,
           username: "ChatBot",
-        });
+        };
+
+        socket.emit("sendMessage", chatContent);
+        saveChat({ room: roomName, newMessage: chatContent });
         setChatLoaded(true);
       }
     }
@@ -108,6 +183,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
 
   const sendMessage = useCallback(() => {
     let chatContent: ChatMessage = {
+      timestamp: new Date(),
       room: roomName as string,
       username: name,
       message: message,
@@ -139,7 +215,10 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
         name,
         setName,
         usersInRoom,
+        fetchNextPage,
+        hasNextPage,
         messages,
+        status,
         sendMessage,
         message,
         setMessage,

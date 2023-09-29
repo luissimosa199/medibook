@@ -1,3 +1,7 @@
+import {
+  FetchNextPageOptions,
+  InfiniteQueryObserverResult,
+} from "@tanstack/react-query";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 export interface TimeLineEntryData {
@@ -88,6 +92,11 @@ export type SocketContextType = {
   previews: string[];
   submitBtnDisabled: boolean;
   chatBoxVariant: "videochat" | "textchat";
+  status: "authenticated" | "loading" | "unauthenticated";
+  fetchNextPage: (
+    options?: FetchNextPageOptions | undefined
+  ) => Promise<InfiniteQueryObserverResult<any, unknown>>;
+  hasNextPage: boolean | undefined;
 };
 
 export type ContextProviderProps = {
@@ -117,10 +126,11 @@ export type ChatFileObject = {
 export type ChatMessage = {
   room?: string;
   username: string;
+  user?: string;
   message?: string;
   files?: {
     url: string;
     type: string;
   }[];
-  timestamp?: Date;
+  timestamp: Date;
 };

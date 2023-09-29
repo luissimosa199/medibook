@@ -11,10 +11,13 @@ const ChatBox = ({
 }) => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
 
+  const prevMessagesLength = useRef(messages.length);
+
   useEffect(() => {
-    if (chatBoxRef.current) {
+    if (chatBoxRef.current && messages.length > prevMessagesLength.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
+    prevMessagesLength.current = messages.length;
   }, [messages]);
 
   return (
@@ -28,6 +31,7 @@ const ChatBox = ({
         {messages &&
           messages.map((e, i) => {
             // Check if the message has files
+
             const hasFiles = e.files && e.files.length > 0;
 
             return (
@@ -36,7 +40,9 @@ const ChatBox = ({
                 className="bg-white w-full"
               >
                 <div className="flex items-center">
-                  <strong className="text-blue-500 mr-2">{e.username}:</strong>
+                  <strong className="text-blue-500 mr-2">
+                    {e.user || e.username}:
+                  </strong>
                   <p>{e.message}</p>
                 </div>
 
