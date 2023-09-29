@@ -67,12 +67,19 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
     fetchChatMessages,
     {
       getNextPageParam: (lastPage) => {
+        if (!lastPage) {
+          return false;
+        }
+
         return lastPage.oldestTimestamp
           ? new Date(lastPage.oldestTimestamp).getTime().toString()
           : false;
       },
       onSuccess(data) {
-        const fetchedMessages = data.pages.flatMap((page) => page.messages);
+        const fetchedMessages = data.pages
+          .filter((page) => page && Array.isArray(page.messages))
+          .flatMap((page) => page.messages);
+
         setMessages((prevMessages) => {
           // Convert existing timestamps to Unix timestamps in milliseconds for quick lookup
           const existingTimestamps = new Set(
