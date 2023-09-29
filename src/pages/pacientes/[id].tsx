@@ -3,7 +3,14 @@ import { PatientModel } from "@/db/models";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { GetServerSidePropsContext } from "next";
 import UserPhotos from "@/components/UserPhotos";
-import { faArrowLeft, faPlus, faX } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faEnvelope,
+  faPhone,
+  faPlus,
+  faUser,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import Image from "next/image";
@@ -200,6 +207,31 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
             />
           </div>
         </div>
+
+        <div className="flex flex-col space-y-4 my-6">
+          <div className="flex items-center space-x-4">
+            <FontAwesomeIcon
+              icon={faUser}
+              className="w-6 h-6 text-gray-600"
+            />
+            <p className="text-lg text-gray-800">{patientData?.details}</p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <FontAwesomeIcon
+              icon={faPhone}
+              className="w-6 h-6 text-gray-600"
+            />
+            <p className="text-lg text-gray-800">{patientData?.tlf}</p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <FontAwesomeIcon
+              icon={faEnvelope}
+              className="w-6 h-6 text-gray-600"
+            />
+            <p className="text-lg text-gray-800">{patientData?.email}</p>
+          </div>
+        </div>
+
         <div>
           <h2 className="text-2xl mt-2 font-semibold text-gray-800 border-b-2 pb-3">
             Fotos:

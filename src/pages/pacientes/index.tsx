@@ -112,14 +112,6 @@ const Usuarios = () => {
   return (
     <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen">
       <div className="flex flex-col">
-        <input
-          type="text"
-          placeholder="Buscar por nombre..."
-          className="p-2 mt-4 border rounded"
-          value={nameFilter}
-          onChange={(e) => setNameFilter(e.target.value)}
-        />
-
         <PatientsFilters
           tags={tags}
           setSelectedTags={setSelectedTags}
@@ -130,18 +122,23 @@ const Usuarios = () => {
             className="w-fit inline-flex items-center p-4 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-800 transition ease-in-out duration-150"
             href="/pacientes/register"
           >
-            Registrar nuevo paciente
+            Nuevo paciente
           </Link>
 
           <button
             className="w-fit inline-flex items-center p-4 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-800 transition ease-in-out duration-150"
             onClick={() => setShowArchived(!showArchived)}
           >
-            {showArchived
-              ? "Mostrar pacientes activos"
-              : "Mostrar pacientes archivados"}
+            {showArchived ? "Pacientes activos" : "Pacientes archivados"}
           </button>
         </div>
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          className="p-2 mt-4 border rounded"
+          value={nameFilter}
+          onChange={(e) => setNameFilter(e.target.value)}
+        />
       </div>
 
       <ul className="divide-y divide-gray-200">
