@@ -193,144 +193,148 @@ const Patient: FunctionComponent<PatientePageProps> = ({ patientData }) => {
           {patientData?.name}
         </h1>
       </div>
-      <div className="flex flex-col justify-around items-center border rounded-lg py-6 md:p-6 bg-white shadow-lg">
-        <div className="min-h-[128px] flex flex-col items-center relative">
-          <ProfilePicture
-            type="pacientes"
-            userId={patientData?._id as string}
-          />
-          <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
-            <PhotoInput
-              handleUploadImages={handleChangeAvatar}
-              variant="small"
-              id="profilepicture"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col space-y-4 my-6">
-          <div className="flex items-center space-x-4">
-            <FontAwesomeIcon
-              icon={faUser}
-              className="w-6 h-6 text-gray-600"
-            />
-            <p className="text-lg text-gray-800">{patientData?.details}</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <FontAwesomeIcon
-              icon={faPhone}
-              className="w-6 h-6 text-gray-600"
-            />
-            <p className="text-lg text-gray-800">{patientData?.tlf}</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <FontAwesomeIcon
-              icon={faEnvelope}
-              className="w-6 h-6 text-gray-600"
-            />
-            <p className="text-lg text-gray-800">{patientData?.email}</p>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-2xl mt-2 font-semibold text-gray-800 border-b-2 pb-3">
-            Fotos:
-          </h2>
-          <UserPhotos
-            userId={patientData?._id as string}
-            queryKey={["patientPhotos", patientData?._id as string]}
-          />
-          <div className="w-24 mx-auto">
-            <PhotoInput
-              handleUploadImages={handleUploadImages}
-              id="patientphotos"
-              variant="small"
-            />
-          </div>
-          <div className="mt-4 space-y-4">
-            {newImages &&
-              newImages.map((e: string, index: number) => {
-                const isVideo = e.includes("data:video/mp4");
-                return (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 bg-gray-100 p-4 rounded-md"
-                  >
-                    <button
-                      onClick={handleDeleteImage(index)}
-                      className="bg-red-500 text-white p-2 w-8 h-8 rounded-full hover:bg-red-600 flex justify-center items-center transition duration-300"
-                    >
-                      <FontAwesomeIcon
-                        className="w-8"
-                        icon={faX}
-                      />
-                    </button>
-                    {isVideo ? (
-                      <video
-                        controls
-                        width="200"
-                        height="200"
-                        className="rounded mx-auto"
-                      >
-                        <source
-                          src={e}
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
-                      <Image
-                        src={e}
-                        alt=""
-                        width={200}
-                        height={200}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-          {newImages.length > 0 && (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isUploading}
-              className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
-            >
-              {isUploading ? "Subiendo..." : "Subir"}
-            </button>
-          )}
-        </div>
-
-        <div className="w-full">
-          <div className="mt-2 border-b-2 pb-3">
-            <div className="flex justify-between px-2 md:px-0">
-              <h2 className="text-2xl font-semibold text-gray-800 ">
-                Historias:
-              </h2>
-              <button
-                className={`border-2 w-10 rounded p-2 ${
-                  addNewTimeline ? "bg-gray-200" : "bg-white"
-                } text-slate-600 transition`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setAddNewTimeline(!addNewTimeline);
-                }}
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
-            </div>
-            {addNewTimeline && (
-              <PrimaryForm
-                patientData={{
-                  pacientId: patientData?._id as string,
-                  pacientName: patientData?.name as string,
-                }}
+      <div className="max-w-[850px] mx-auto">
+        <div className="flex flex-col justify-around items-center border rounded-lg py-6 md:p-6 bg-white shadow-lg">
+          <div className="flex flex-col items-center lg:flex-row gap-2">
+            <div className="min-h-[128px] flex flex-col items-center relative">
+              <ProfilePicture
+                type="pacientes"
+                userId={patientData?._id as string}
               />
+              <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
+                <PhotoInput
+                  handleUploadImages={handleChangeAvatar}
+                  variant="small"
+                  id="profilepicture"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-4 my-6">
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="w-6 h-6 text-gray-600"
+                />
+                <p className="text-lg text-gray-800">{patientData?.details}</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className="w-6 h-6 text-gray-600"
+                />
+                <p className="text-lg text-gray-800">{patientData?.tlf}</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <FontAwesomeIcon
+                  icon={faEnvelope}
+                  className="w-6 h-6 text-gray-600"
+                />
+                <p className="text-lg text-gray-800">{patientData?.email}</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-2xl mt-2 font-semibold text-gray-800 border-b-2 pb-3">
+              Fotos:
+            </h2>
+            <UserPhotos
+              userId={patientData?._id as string}
+              queryKey={["patientPhotos", patientData?._id as string]}
+            />
+            <div className="w-24 mx-auto">
+              <PhotoInput
+                handleUploadImages={handleUploadImages}
+                id="patientphotos"
+                variant="small"
+              />
+            </div>
+            <div className="mt-4 space-y-4">
+              {newImages &&
+                newImages.map((e: string, index: number) => {
+                  const isVideo = e.includes("data:video/mp4");
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 bg-gray-100 p-4 rounded-md"
+                    >
+                      <button
+                        onClick={handleDeleteImage(index)}
+                        className="bg-red-500 text-white p-2 w-8 h-8 rounded-full hover:bg-red-600 flex justify-center items-center transition duration-300"
+                      >
+                        <FontAwesomeIcon
+                          className="w-8"
+                          icon={faX}
+                        />
+                      </button>
+                      {isVideo ? (
+                        <video
+                          controls
+                          width="200"
+                          height="200"
+                          className="rounded mx-auto"
+                        >
+                          <source
+                            src={e}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <Image
+                          src={e}
+                          alt=""
+                          width={200}
+                          height={200}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+            {newImages.length > 0 && (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isUploading}
+                className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+              >
+                {isUploading ? "Subiendo..." : "Subir"}
+              </button>
             )}
           </div>
-          <div>
-            <PatientTimelines userId={patientData?._id as string} />
+
+          <div className="w-full">
+            <div className="mt-2 border-b-2 pb-3">
+              <div className="flex justify-between px-2 md:px-0">
+                <h2 className="text-2xl font-semibold text-gray-800 ">
+                  Historias:
+                </h2>
+                <button
+                  className={`border-2 w-10 rounded p-2 ${
+                    addNewTimeline ? "bg-gray-200" : "bg-white"
+                  } text-slate-600 transition`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setAddNewTimeline(!addNewTimeline);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+              {addNewTimeline && (
+                <PrimaryForm
+                  patientData={{
+                    pacientId: patientData?._id as string,
+                    pacientName: patientData?.name as string,
+                  }}
+                />
+              )}
+            </div>
+            <div>
+              <PatientTimelines userId={patientData?._id as string} />
+            </div>
           </div>
         </div>
       </div>
