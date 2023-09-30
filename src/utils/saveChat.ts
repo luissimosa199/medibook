@@ -11,7 +11,7 @@ export async function saveChat({ room, newMessage }: SaveChatParams) {
       method: "POST",
       body: JSON.stringify({
         timestamp: newMessage.timestamp?.toISOString(),
-        user: newMessage.username,
+        user: newMessage.user,
         message: newMessage.message,
         files: newMessage.files, // send the files array
       }),

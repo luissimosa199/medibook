@@ -30,8 +30,6 @@ const ChatBox = ({
       <div className="flex flex-col items-center justify-center px-2">
         {messages &&
           messages.map((e, i) => {
-            // Check if the message has files
-
             const hasFiles = e.files && e.files.length > 0;
 
             return (
@@ -40,9 +38,7 @@ const ChatBox = ({
                 className="bg-white w-full"
               >
                 <div className="flex items-center">
-                  <strong className="text-blue-500 mr-2">
-                    {e.user || e.username}:
-                  </strong>
+                  <strong className="text-blue-500 mr-2">{e.user}:</strong>
                   <p>{e.message}</p>
                 </div>
 

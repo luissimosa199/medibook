@@ -125,8 +125,8 @@ export type ChatFileObject = {
 
 export type ChatMessage = {
   room?: string;
-  username: string;
-  user?: string;
+  // username: string;
+  user: string;
   message?: string;
   files?: {
     url: string;

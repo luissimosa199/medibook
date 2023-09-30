@@ -46,7 +46,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
   const [submitBtnDisabled, setSubmitBtnDisabled] = useState<boolean>(false);
 
   const fetchChatMessages = async ({ pageParam }: { pageParam?: string }) => {
-    const beforeTimestamp = pageParam ? pageParam : ""; // Use the oldestTimestamp as the cursor for the next fetch
+    const beforeTimestamp = pageParam ? pageParam : "";
 
     if (!roomName) {
       return;
@@ -104,7 +104,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
           return [...uniqueFetchedMessages, ...prevMessages];
         });
       },
-      staleTime: 1000 * 60 * 60, // 1 hour, for example
+      staleTime: 1000 * 60 * 60,
       refetchInterval: false,
     }
   );
@@ -143,7 +143,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
           timestamp: new Date(),
           room: roomName,
           message: `${userName} se ha conectado al chat`,
-          username: "ChatBot",
+          user: "ChatBot",
         };
 
         socket.emit("sendMessage", chatContent);
@@ -192,7 +192,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
     let chatContent: ChatMessage = {
       timestamp: new Date(),
       room: roomName as string,
-      username: name,
+      user: name,
       message: message,
       files: files.map((e) => {
         return { url: e, type: e.slice(-3) };
