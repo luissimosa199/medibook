@@ -110,7 +110,7 @@ const Usuarios = () => {
     });
 
   return (
-    <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen">
+    <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen max-w-[850px] mx-auto">
       <div className="flex flex-col">
         <PatientsFilters
           tags={tags}

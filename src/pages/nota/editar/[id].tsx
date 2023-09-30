@@ -235,6 +235,8 @@ const Edit = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
+  const pictureSize = 400;
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl mb-4">Editar</h1>
@@ -272,7 +274,7 @@ const Edit = () => {
             photo.map((e: TimeLineEntryData, index: number) => (
               <div
                 key={index}
-                className="flex flex-col min-[470px]:flex-row items-center gap-2 md:justify-center"
+                className="flex flex-col items-center gap-2 md:justify-center"
               >
                 <div className="flex gap-2 items-center mr-[25px] min-[470px]:mr-0">
                   <button
@@ -286,8 +288,8 @@ const Edit = () => {
                   </button>
                   {/\/dahu3rii0\/video\/upload\//.test(e.url) ? (
                     <video
-                      width="100"
-                      height="100"
+                      width={pictureSize}
+                      height={pictureSize}
                       controls
                     >
                       <source
@@ -300,8 +302,8 @@ const Edit = () => {
                     <Image
                       src={e.url}
                       alt=""
-                      width={100}
-                      height={100}
+                      width={pictureSize}
+                      height={pictureSize}
                     />
                   )}
                 </div>
@@ -317,7 +319,7 @@ const Edit = () => {
             newImages.map((e: string, index: number) => (
               <div
                 key={index}
-                className="flex flex-col min-[470px]:flex-row items-center gap-2 bg-gray-100 p-2 rounded-md md:justify-center"
+                className="flex flex-col items-center gap-2 bg-gray-100 p-2 rounded-md md:justify-center"
               >
                 <div className="flex gap-2 items-center mr-[25px] min-[470px]:mr-0">
                   <button
@@ -331,8 +333,8 @@ const Edit = () => {
                   </button>
                   {/data:video\/mp4/.test(e) ? (
                     <video
-                      width="100"
-                      height="100"
+                      width={pictureSize}
+                      height={pictureSize}
                       controls
                     >
                       <source
@@ -345,8 +347,8 @@ const Edit = () => {
                     <Image
                       src={e}
                       alt=""
-                      width={100}
-                      height={100}
+                      width={pictureSize}
+                      height={pictureSize}
                     />
                   )}
                 </div>

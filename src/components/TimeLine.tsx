@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import IFrame from "./Iframe";
 import { isYtUrl, extractVideoId, extractTimestamp } from "@/utils/isYtUrl";
 import YouTubePlayer from "./YoutubePlayer";
+import React from "react";
 
 const TimeLine: FunctionComponent<TimeLineProps> = ({
   timeline,
@@ -120,16 +121,15 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({
           <p className="text-gray-500 mt-2 text-xs font-medium tracking-wider text-left uppercase ">
             {tags.map((e: string, idx: number) => {
               return (
-                <>
+                <React.Fragment key={idx}>
                   <Link
                     href={`/nota/search?tags=${e}`}
-                    key={idx}
                     className="cursor-pointer hover:underline"
                   >
                     {e}
                   </Link>
                   {idx + 1 !== tags.length && ","}{" "}
-                </>
+                </React.Fragment>
               );
             })}
           </p>
