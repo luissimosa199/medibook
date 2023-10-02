@@ -14,8 +14,8 @@ interface ProfilePictureProps {
 
 const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({
   userId,
-  w = 128,
-  h = 128,
+  w,
+  h,
   type,
 }) => {
   const { data: session } = useSession();

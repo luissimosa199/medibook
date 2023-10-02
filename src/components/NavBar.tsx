@@ -20,13 +20,13 @@ const Navbar = () => {
 
       <div className="flex gap-1 md:gap-2 items-center justify-end w-1/3">
         {session ? (
-          <>
+          <div className="w-[60px]">
             <ProfilePicture
               type="user"
-              w={100}
-              h={100}
+              w={60}
+              h={60}
             />
-          </>
+          </div>
         ) : (
           <Link href="/login">
             <p className="text-3xl">Iniciar Sesion</p>
