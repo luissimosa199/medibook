@@ -56,15 +56,19 @@ const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({
   }
 
   return (
-    <div className={`flex flex-col items-center justify-center`}>
-      <Link href="/perfil">
+    <div
+      className={`flex min-w-[${w}px] min-h-[${h}px] flex-col items-center justify-center relative`}
+    >
+      <Link
+        href="/perfil"
+        className="w-full h-full"
+      >
         <CldImage
           src={(data.image as string) || noProfileImage}
           width={w}
           height={h}
           alt={`${userId}'s Avatar`}
-          className={`h-[${h}px] object-cover rounded-full border-2 border-gray-300`}
-          style={{ height: `${h}px` }}
+          className={`object-cover rounded-full border-2 border-gray-300 w-full h-full`}
         />
       </Link>
     </div>

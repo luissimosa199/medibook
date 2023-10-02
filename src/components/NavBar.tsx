@@ -4,11 +4,9 @@ import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut, useSession } from "next-auth/react";
 import ProfilePicture from "./ProfilePicture";
-import { useRouter } from "next/router";
 
 const Navbar = () => {
   const { data: session } = useSession();
-  const router = useRouter();
 
   return (
     <header className="flex justify-between gap-2 p-2 bg-base-100">
@@ -25,8 +23,8 @@ const Navbar = () => {
           <>
             <ProfilePicture
               type="user"
-              w={70}
-              h={70}
+              w={100}
+              h={100}
             />
           </>
         ) : (

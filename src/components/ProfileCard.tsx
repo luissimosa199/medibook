@@ -65,7 +65,11 @@ const ProfileCard = () => {
     <div className="flex flex-col justify-around items-center rounded-lg p-6 bg-white shadow-lg">
       <div className="px-12">
         <div className="flex flex-col items-center relative ">
-          <ProfilePicture type="user" />
+          <ProfilePicture
+            type="user"
+            w={150}
+            h={150}
+          />
           <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
             <PhotoInput
               handleUploadImages={handleChangeAvatar}

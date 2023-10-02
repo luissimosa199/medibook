@@ -15,7 +15,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Patient } from "@/types";
 
 interface UserInterface {
-  paciente: { name: string; email: string; image: string; _id: string; isArchived: boolean };
+  paciente: {
+    name: string;
+    email: string;
+    image: string;
+    _id: string;
+    isArchived: boolean;
+  };
   session: Session | null;
 }
 
@@ -75,7 +81,7 @@ const PatientCard: FunctionComponent<UserInterface> = ({
       className="py-4 space-y-4"
     >
       <div className="flex items-center gap-4">
-        <div className="rounded-full h-[110px] w-[110px] border-2 overflow-hidden relative">
+        <div className="rounded-full h-[50px] min-w-[50px] border-2 overflow-hidden relative">
           <Link href={`/pacientes/${paciente._id}`}>
             <CldImage
               alt={`foto de ${paciente.name}`}
@@ -87,7 +93,9 @@ const PatientCard: FunctionComponent<UserInterface> = ({
         </div>
         <div className="flex flex-col">
           <p className="text-lg font-medium">{paciente.name}</p>
-          {paciente.isArchived && <p className="text-sm text-slate-400 font-medium">(archivado)</p>}
+          {paciente.isArchived && (
+            <p className="text-sm text-slate-400 font-medium">(archivado)</p>
+          )}
         </div>
 
         <div className="ml-auto flex gap-2">
