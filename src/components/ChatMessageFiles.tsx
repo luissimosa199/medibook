@@ -1,6 +1,6 @@
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 import React from "react";
 
 const ChatMessageFiles = ({
@@ -27,6 +27,12 @@ const ChatMessageFiles = ({
     }
   }
 
+  const extractFileName = (url: string) => {
+    const regex = /([^/_]+)(?=_[^/]+$)/;
+    const match = url.match(regex);
+    return match ? match[1] : "defaultName"; // defaultName is a fallback in case the regex doesn't match
+  };
+
   return (
     <div className="mt-2 flex gap-2 bg-slate-200 p-2 rounded">
       {files?.map((file, index) => {
@@ -37,15 +43,15 @@ const ChatMessageFiles = ({
               onClick={() =>
                 downloadFileFromCloudinary(
                   file.url,
-                  `file_${index}.${file.type}`
+                  `imagen_${index}.${file.type}`
                 )
               }
               key={index}
             >
-              <Image
+              <CldImage
                 src={file.url}
-                width={80}
-                height={80}
+                width={500}
+                height={500}
                 alt={`File ${index}`}
                 className="rounded shadow-md hover:scale-110 hover:shadow-lg transition-all"
               />
@@ -60,7 +66,19 @@ const ChatMessageFiles = ({
               key={index}
               src={file.url}
               controls
-              className="rounded shadow-md hover:scale-110 hover:shadow-lg transition-all"
+              className="rounded shadow-md"
+            />
+          );
+        } else if (file.type === "pdf") {
+          // Render iframe for PDF files
+          return (
+            <iframe
+              key={index}
+              src={file.url}
+              width="500"
+              height="500"
+              className="rounded shadow-md"
+              title={`PDF File ${index}`}
             />
           );
         } else {
@@ -74,10 +92,11 @@ const ChatMessageFiles = ({
                 onClick={() =>
                   downloadFileFromCloudinary(
                     file.url,
-                    `file_${index}.${file.type}`
+                    `${extractFileName(file.url)}.${file.type}`
                   )
                 }
               >
+                <p className="text-sm px-2">{extractFileName(file.url)}</p>
                 <p className="text-black p-1 text-center uppercase">
                   {file.type}
                 </p>

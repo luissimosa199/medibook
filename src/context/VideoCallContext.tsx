@@ -170,23 +170,13 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
     }
   }, [session]);
 
-  const handleUploadImages = async (event: ChangeEvent<HTMLInputElement>) => {
-    setSubmitBtnDisabled(true);
-    const newPreviews = await handleNewFileChange(event);
-    setPreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
-
-    try {
-      const uploadedUrls = await uploadImages(event);
-
-      // If you want to set the URLs to some state
-      setFiles((prevFiles) => [...prevFiles, ...(uploadedUrls as string[])]);
-    } catch (error) {
-      console.error("Error uploading images:", error);
+  useEffect(() => {
+    // Check if there are any files in the state
+    if (files.length > 0) {
+      sendMessage();
     }
-
-    setSubmitBtnDisabled(false);
-    event.target.value = "";
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
 
   const sendMessage = useCallback(() => {
     let chatContent: ChatMessage = {
@@ -215,6 +205,23 @@ const ContextProvider: React.FC<ContextProviderProps> = ({
       setPreviews([]);
     }
   }, [name, files, message, socket, roomName]);
+
+  const handleUploadImages = async (event: ChangeEvent<HTMLInputElement>) => {
+    setSubmitBtnDisabled(true);
+    const newPreviews = await handleNewFileChange(event);
+    setPreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+
+    try {
+      const uploadedUrls = await uploadImages(event);
+      // If you want to set the URLs to some state
+      setFiles((prevFiles) => [...prevFiles, ...(uploadedUrls as string[])]);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+    }
+
+    setSubmitBtnDisabled(false);
+    event.target.value = "";
+  };
 
   return (
     <SocketContext.Provider
