@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import VideoCallChatBox from "./VideoCallChatBox";
 import { SocketContext } from "@/context/VideoCallContext";
 import ShareButtons from "./ShareButtons";
+import Link from "next/link";
 
 const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
   const context = useContext(SocketContext);
@@ -43,6 +44,7 @@ const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
               channelName
             )}`}
           />
+          <Link href="/pacientes">Volver</Link>
         </div>
       </div>
 
