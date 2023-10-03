@@ -7,8 +7,8 @@ import { CldImage } from "next-cloudinary";
 
 interface ProfilePictureProps {
   userId?: string;
-  w?: number;
-  h?: number;
+  w?: string;
+  h?: string;
   type: "user" | "pacientes";
 }
 
@@ -56,22 +56,21 @@ const ProfilePicture: FunctionComponent<ProfilePictureProps> = ({
   }
 
   return (
-    <div
-      className={`flex min-w-[${w}px] min-h-[${h}px] flex-col items-center justify-center relative`}
+    <Link
+      href="/perfil"
+      className="w-full h-full"
     >
-      <Link
-        href="/perfil"
-        className="w-full h-full"
+      <div
+        className={`flex ${w} ${h} flex-col items-center justify-center relative`}
       >
         <CldImage
           src={(data.image as string) || noProfileImage}
-          width={w}
-          height={h}
+          fill
           alt={`${userId}'s Avatar`}
-          className={`object-cover rounded-full border-2 border-gray-300 w-full h-full`}
+          className={`object-cover absolute rounded-full border-2 border-gray-300 w-full`}
         />
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 };
 

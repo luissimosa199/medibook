@@ -68,8 +68,8 @@ const ProfileCard = () => {
           <div className="w-[150px] h-[150px]">
             <ProfilePicture
               type="user"
-              w={150}
-              h={150}
+              w="w-[150px]"
+              h="h-[150px]"
             />
           </div>
           <div className="border-2 absolute bottom-0 left-0 bg-white h-12 w-12 rounded-full overflow-hidden flex justify-center">
