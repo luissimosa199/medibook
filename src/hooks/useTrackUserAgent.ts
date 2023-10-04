@@ -7,9 +7,9 @@ const useTrackUserAgent = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
-      return;
-    }
+    // if (process.env.NODE_ENV !== "production") {
+    //   return;
+    // }
 
     if (!router.isReady) return;
 

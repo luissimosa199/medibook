@@ -26,6 +26,9 @@ export class User {
   @prop()
   image?: string;
 
+  @prop({ type: [String], default: [] })
+  user_agent_id: string[];
+
   @prop()
   photos?: string[];
 

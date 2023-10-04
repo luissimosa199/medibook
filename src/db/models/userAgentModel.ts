@@ -21,9 +21,31 @@ class Visit {
   browser: Record<string, any>;
 }
 
+class PushSubscriptionKeys {
+  @prop({ required: true })
+  p256dh!: string;
+
+  @prop({ required: true })
+  auth!: string;
+}
+
+class PushSubscription {
+  @prop({ required: true })
+  endpoint!: string;
+
+  @prop({ required: false }) // It can be null based on the Push API
+  expirationTime?: number | null;
+
+  @prop({ required: true })
+  keys!: PushSubscriptionKeys;
+}
+
 export class UserAgent {
   @prop()
   _id: string;
+
+  @prop({ required: false })
+  PushSubscription?: PushSubscription;
 
   @prop({ type: () => [Visit] })
   visits: Visit[];

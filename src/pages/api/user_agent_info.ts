@@ -75,7 +75,9 @@ export default async function handler(
           },
           {
             $match: {
-              "visits.entry_point": new RegExp((username as string).split('@')[0] + "$"), // Match entry_point that ends with username
+              "visits.entry_point": new RegExp(
+                (username as string).split("@")[0] + "$"
+              ), // Match entry_point that ends with username
             },
           },
           {

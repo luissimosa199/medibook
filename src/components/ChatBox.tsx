@@ -1,13 +1,23 @@
 import { ChatMessage } from "@/types";
 import React, { useEffect, useRef } from "react";
 import ChatMessageFiles from "./ChatMessageFiles";
+import {
+  FetchNextPageOptions,
+  InfiniteQueryObserverResult,
+} from "@tanstack/react-query";
 
 const ChatBox = ({
   messages,
   chatBoxVariant = "videochat",
+  hasNextPage,
+  fetchNextPage,
 }: {
   messages: ChatMessage[];
   chatBoxVariant?: "videochat" | "textchat";
+  hasNextPage: boolean | undefined;
+  fetchNextPage: (
+    options?: FetchNextPageOptions | undefined
+  ) => Promise<InfiniteQueryObserverResult<any, unknown>>;
 }) => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
 
@@ -28,6 +38,14 @@ const ChatBox = ({
       ref={chatBoxRef}
     >
       <div className="flex flex-col items-center justify-center px-2">
+        {hasNextPage && (
+          <button
+            onClick={() => fetchNextPage()}
+            className="my-2 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+          >
+            Cargar mensajes anteriores
+          </button>
+        )}
         {messages &&
           messages.map((e, i) => {
             const hasFiles = e.files && e.files.length > 0;

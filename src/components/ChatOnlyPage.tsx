@@ -3,6 +3,7 @@ import VideoCallChatBox from "./VideoCallChatBox";
 import { SocketContext } from "@/context/VideoCallContext";
 import ShareButtons from "./ShareButtons";
 import Link from "next/link";
+import useServiceWorker from "@/hooks/useServiceWorker";
 
 const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
   const context = useContext(SocketContext);
@@ -13,8 +14,35 @@ const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
 
   const { setRoomName, usersInRoom } = context;
 
+  const { requestNotificationPermission } = useServiceWorker(
+    "/service-worker.js",
+    channelName
+  );
+
   useEffect(() => {
     setRoomName(channelName as string);
+
+    // Notify other users in the chat room
+    const notifyUsers = async () => {
+      try {
+        const response = await fetch("/api/notifyUsers", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ channelName }),
+        });
+
+        const data = await response.json();
+        if (!data.success) {
+          console.error("Error notifying users:", data.error);
+        }
+      } catch (error) {
+        console.error("Error notifying users:", error);
+      }
+    };
+
+    notifyUsers();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelName]);
@@ -44,7 +72,20 @@ const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
               channelName
             )}`}
           />
-          <Link href="/pacientes">Volver</Link>
+          <div className=" flex gap-2">
+            <Link
+              className="rounded-lg bg-blue-200 px-1 text-sm"
+              href="/pacientes"
+            >
+              Volver
+            </Link>
+            <button
+              className="rounded-lg bg-blue-200 px-1 text-sm"
+              onClick={requestNotificationPermission}
+            >
+              Activar Notificaciones
+            </button>
+          </div>
         </div>
       </div>
 

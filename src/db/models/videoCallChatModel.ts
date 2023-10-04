@@ -56,6 +56,9 @@ export class VideoCallChat {
 
   @prop()
   messages: Message[];
+
+  @prop({ default: () => [] })
+  subscribedForNotifications?: string[];
 }
 
 export const VideoCallChatModel = getModelForClass(VideoCallChat);
