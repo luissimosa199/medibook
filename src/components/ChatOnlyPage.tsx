@@ -4,6 +4,7 @@ import { SocketContext } from "@/context/VideoCallContext";
 import ShareButtons from "./ShareButtons";
 import Link from "next/link";
 import useServiceWorker from "@/hooks/useServiceWorker";
+import ChatNotificationToggleBtn from "./ChatNotificationToggleBtn";
 
 const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
   const context = useContext(SocketContext);
@@ -13,11 +14,6 @@ const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
   }
 
   const { setRoomName, usersInRoom } = context;
-
-  const { requestNotificationPermission } = useServiceWorker(
-    "/service-worker.js",
-    channelName
-  );
 
   useEffect(() => {
     setRoomName(channelName as string);
@@ -79,12 +75,8 @@ const ChatOnlyPage = ({ channelName }: { channelName: string }) => {
             >
               Volver
             </Link>
-            <button
-              className="rounded-lg bg-blue-200 px-1 text-sm"
-              onClick={requestNotificationPermission}
-            >
-              Activar Notificaciones
-            </button>
+
+            <ChatNotificationToggleBtn channelName={channelName} />
           </div>
         </div>
       </div>

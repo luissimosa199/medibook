@@ -28,9 +28,16 @@ export default async function handler(
 
     const subscribers = chat.subscribedForNotifications || [];
 
+    const payload = JSON.stringify({
+      message: "Alguien quiere chatear con vos!",
+      url: `${process.env.NEXT_PUBLIC_BASE_URL as string}/chat/${encodeURI(
+        channelName
+      )}`,
+    });
+
     // Send notifications to those users
     for (const userId of subscribers) {
-      await sendNotificationToUser(userId, "Quieren chatear con vos!");
+      await sendNotificationToUser(userId, payload);
     }
 
     res.status(200).json({ success: true });

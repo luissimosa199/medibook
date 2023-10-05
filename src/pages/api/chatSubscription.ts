@@ -7,31 +7,66 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "POST") {
-    return res.status(405).end(); // Method Not Allowed
-  }
+  await dbConnect();
 
-  const { user_agent_id, subscription, conversationId } = req.body;
+  if (req.method === "POST") {
+    const { user_agent_id, subscription, conversationId } = req.body;
+    if (!user_agent_id || !subscription || !conversationId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
-  if (!user_agent_id || !subscription || !conversationId) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+    try {
+      // Update the UserAgent with the subscription
+      await UserAgentModel.findByIdAndUpdate(user_agent_id, {
+        PushSubscription: subscription,
+      });
 
-  try {
-    await dbConnect();
+      // Add the user_agent_id to the VideoCallChat's subscribedForNotifications list
+      await VideoCallChatModel.findByIdAndUpdate(conversationId, {
+        $addToSet: { subscribedForNotifications: user_agent_id },
+      });
 
-    // Update the UserAgent with the subscription
-    await UserAgentModel.findByIdAndUpdate(user_agent_id, {
-      PushSubscription: subscription,
-    });
+      res.status(200).json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else if (req.method === "GET") {
+    const { user_agent_id, conversationId } = req.query;
 
-    // Add the user_agent_id to the VideoCallChat's subscribedForNotifications list
-    await VideoCallChatModel.findByIdAndUpdate(conversationId, {
-      $addToSet: { subscribedForNotifications: user_agent_id },
-    });
+    if (!user_agent_id || !conversationId) {
+      return res
+        .status(400)
+        .json({ error: "Missing required query parameters" });
+    }
 
-    res.status(200).json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    try {
+      const chat = await VideoCallChatModel.findById(conversationId);
+
+      const isSubscribed = chat?.subscribedForNotifications?.includes(
+        user_agent_id as string
+      );
+
+      res.status(200).json({ isSubscribed });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else if (req.method === "DELETE") {
+    const { user_agent_id, conversationId } = req.body;
+
+    if (!user_agent_id || !conversationId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+      await VideoCallChatModel.findByIdAndUpdate(conversationId, {
+        $pull: { subscribedForNotifications: user_agent_id },
+      });
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
   }
 }

@@ -1,6 +1,11 @@
 self.addEventListener("push", function (event) {
+  const data = event.data.json();
+
   var options = {
-    body: event.data.text(),
+    body: data.message,
+    data: {
+      url: data.url,
+    },
     // You can add more options like icons, actions, etc. For example:
     // icon: 'path-to-icon.png',
     // badge: 'path-to-badge.png',
@@ -10,7 +15,7 @@ self.addEventListener("push", function (event) {
   };
 
   event.waitUntil(
-    self.registration.showNotification("My Notification Title", options)
+    self.registration.showNotification("Tu panel doxadoctor!", options)
   );
 });
 
@@ -19,5 +24,5 @@ self.addEventListener("notificationclick", function (event) {
   event.notification.close(); // Close the notification
 
   // Handle the click action here. For instance, open a specific URL:
-  event.waitUntil(clients.openWindow("https://panel.doxadoctor.com"));
+  event.waitUntil(clients.openWindow(event.notification.data.url));
 });

@@ -1,7 +1,7 @@
 import { UserAgentModel } from "@/db/models";
 import webPush from "web-push";
 
-export async function sendNotificationToUser(userId: string, message: string) {
+export async function sendNotificationToUser(userId: string, payload: string) {
   const user = await UserAgentModel.findById(userId);
 
   if (!user || !user.PushSubscription) {
@@ -16,5 +16,5 @@ export async function sendNotificationToUser(userId: string, message: string) {
     },
   };
 
-  return webPush.sendNotification(pushConfig, message);
+  return webPush.sendNotification(pushConfig, payload);
 }
