@@ -29,6 +29,7 @@ class PushSubscriptionKeys {
   auth!: string;
 }
 
+@modelOptions({ options: { allowMixed: 0 } })
 class PushSubscription {
   @prop({ required: true })
   endpoint!: string;
