@@ -91,12 +91,14 @@ const PatientCard: FunctionComponent<UserInterface> = ({
             />
           </Link>
         </div>
-        <div className="flex flex-col">
-          <p className="text-lg font-medium">{paciente.name}</p>
-          {paciente.isArchived && (
-            <p className="text-sm text-slate-400 font-medium">(archivado)</p>
-          )}
-        </div>
+        <Link href={`/pacientes/${paciente._id}`}>
+          <div className="flex flex-col">
+            <p className="text-lg font-medium">{paciente.name}</p>
+            {paciente.isArchived && (
+              <p className="text-sm text-slate-400 font-medium">(archivado)</p>
+            )}
+          </div>
+        </Link>
 
         <div className="ml-auto flex gap-2">
           {session?.user && (
