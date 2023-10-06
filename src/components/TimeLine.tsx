@@ -15,6 +15,7 @@ import IFrame from "./Iframe";
 import { isYtUrl, extractVideoId, extractTimestamp } from "@/utils/isYtUrl";
 import YouTubePlayer from "./YoutubePlayer";
 import React from "react";
+import Ad from "./Ad";
 
 const TimeLine: FunctionComponent<TimeLineProps> = ({
   timeline,
@@ -99,9 +100,9 @@ const TimeLine: FunctionComponent<TimeLineProps> = ({
         />
       </Head>
       <div className="bg-white shadow-md rounded-lg py-4">
-        {/* <div className="">
-                    <Ad/>
-                </div> */}
+        <div className="">
+          <Ad />
+        </div>
         <div className="px-4">
           <div className="text-left">
             {mainText &&
