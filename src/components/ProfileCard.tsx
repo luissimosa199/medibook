@@ -6,6 +6,7 @@ import { uploadImages } from "@/utils/formHelpers";
 import PhotoInput from "./PhotoInput";
 import ProfileButtonsPanel from "./ProfileButtonsPanel";
 import ProfileStats from "./ProfileStats";
+import AdsSwitch from "./AdsSwitch";
 
 const ProfileCard = () => {
   const { data: session } = useSession();
@@ -86,8 +87,9 @@ const ProfileCard = () => {
         <p className="font-bold text-2xl mb-3">{session!.user!.name}</p>
         <p className="italic mb-6 text-gray-600">{session!.user!.email}</p>
         <ProfileStats />
-        <div className="mx-auto flex justify-center max-[443px]:max-w-[11rem] min-[443px]:max-w-[20.7rem] min-[616px]:max-w-[30.5rem]">
+        <div className="mx-auto flex flex-col justify-center max-[443px]:max-w-[11rem] min-[443px]:max-w-[20.7rem] min-[616px]:max-w-[30.5rem]">
           <ProfileButtonsPanel />
+          <AdsSwitch />
         </div>
       </div>
     </div>
