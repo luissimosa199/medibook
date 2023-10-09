@@ -6,6 +6,10 @@ import { modelOptions, prop, getModelForClass } from "@typegoose/typegoose";
   },
 })
 export class FormTurnos {
+
+  @prop()
+  id: string;
+
   @prop()
   nombreCompleto: string;
 

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Turnos = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ const Turnos = () => {
     localidad: "",
     dni: "",
     comentario: "",
+    id: "",
   });
 
   const router = useRouter();
@@ -39,6 +40,7 @@ const Turnos = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData);
 
     try {
       const response = await fetch("/api/formulario/turnos", {
@@ -61,6 +63,15 @@ const Turnos = () => {
     }
   };
 
+  useEffect(() => {
+    if (router.query.id) {
+      setFormData((prevData) => ({
+        ...prevData,
+        id: router.query.id as string,
+      }));
+    }
+  }, [router.query]);
+
   return (
     <div className="p-6 bg-gray-100 ">
       <h2 className="text-2xl font-bold mb-4">Formulario para los turnos</h2>
@@ -68,6 +79,13 @@ const Turnos = () => {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded shadow-md max-w-[850px] mx-auto"
       >
+        <input
+          type="text"
+          name="id"
+          value={formData.id}
+          onChange={handleChange}
+          hidden
+        />
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">
             Nombre completo:
