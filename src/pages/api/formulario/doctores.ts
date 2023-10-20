@@ -8,23 +8,25 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
-    return res.status(405).end(); // Method Not Allowed
+    return res.status(405).end();
   }
   await dbConnect();
 
   const formData = JSON.parse(req.body);
 
-  const newFormEntry = new ProspectsDocsModel({
-    id: formData.id,
-    name: formData.name,
-    tlf: formData.tlf,
-    email: formData.email,
-  });
-
   try {
-    await newFormEntry.save();
+    const updatedDoc = await ProspectsDocsModel.findOneAndUpdate(
+      { id: formData.id },
+      {
+        form_name: formData.name,
+        tlf: formData.tlf,
+        form_email: formData.email,
+        response: true,
+      },
+      { upsert: true, new: true }
+    );
 
-    res.status(200).json({ success: true, data: formData });
+    res.status(200).json({ success: true, data: updatedDoc });
   } catch (error) {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }

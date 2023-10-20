@@ -13,10 +13,19 @@ export class ProspectsDocs {
   name: string;
 
   @prop()
-  tlf: string;
+  tlf?: string;
 
   @prop()
   email: string;
+
+  @prop()
+  form_name?: string;
+
+  @prop()
+  form_email?: string;
+
+  @prop({ default: false })
+  response: boolean;
 }
 
 export const ProspectsDocsModel = getModelForClass(ProspectsDocs);
