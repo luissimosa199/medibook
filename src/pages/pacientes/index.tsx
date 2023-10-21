@@ -6,6 +6,7 @@ import PatientCard from "@/components/PatientCard";
 import { useState } from "react";
 import PatientsFilters from "@/components/PatientsFilters";
 import { Patient } from "@/db/models/patientModel";
+import AsideMenu from "@/components/AsideMenu";
 
 interface UserInterface {
   name: string;
@@ -112,10 +113,14 @@ const Usuarios = () => {
   return (
     <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen max-w-[850px] mx-auto">
       <div className="flex flex-col">
-        <PatientsFilters
-          tags={tags}
-          setSelectedTags={setSelectedTags}
-        />
+        <div className="my-4 2xl:absolute 2xl:left-8 2xl:p-8 bg-white ">
+          <PatientsFilters
+            tags={tags}
+            setSelectedTags={setSelectedTags}
+          />
+
+          <AsideMenu />
+        </div>
 
         <div className="flex justify-between">
           <Link

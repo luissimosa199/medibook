@@ -8,7 +8,7 @@ const PatientsFilters = ({
   setSelectedTags: Dispatch<SetStateAction<string[]>>;
 }) => {
   return (
-    <div className="my-4 xl:absolute xl:left-8 xl:shadow-md 2xl:p-8 2xl:left-16 bg-white p-4 rounded-lg ">
+    <div className="2xl:shadow-md p-4 rounded-lg">
       <h3 className="font-semibold text-lg mb-4 text-gray-700">
         Filtrar por categoría
       </h3>
