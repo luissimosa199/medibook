@@ -32,7 +32,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/perfil">
+          <Link href="/pacientes">
             <FontAwesomeIcon
               icon={faHospitalUser}
               className="mr-2"
@@ -41,7 +41,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/perfil">
+          <Link href="/dev/cobros">
             <FontAwesomeIcon
               icon={faDollar}
               className="mr-2"
@@ -50,7 +50,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/perfil">
+          <Link href="/dev/obtener_mas_pacientes">
             <FontAwesomeIcon
               icon={faArrowUpShortWide}
               className="mr-2"
@@ -68,7 +68,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/usuarios">
+          <Link href="/pacientes">
             <FontAwesomeIcon
               icon={faMessage}
               className="mr-2"
@@ -77,7 +77,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/">
+          <Link href="/dev/tarjeta_personal">
             <FontAwesomeIcon
               icon={faAddressCard}
               className="mr-2"
@@ -86,7 +86,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/">
+          <Link href="/dev/cuadro_de_honor">
             <FontAwesomeIcon
               icon={faAward}
               className="mr-2"
@@ -95,7 +95,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/">
+          <Link href="/dev/compartir_perfil">
             <FontAwesomeIcon
               icon={faShareNodes}
               className="mr-2"
@@ -104,7 +104,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/">
+          <Link href="/dev/editar_perfil">
             <FontAwesomeIcon
               icon={faPenToSquare}
               className="mr-2"
@@ -118,11 +118,11 @@ const AsideMenu = () => {
               icon={faImage}
               className="mr-2"
             />
-            <span>Publicar nota/foto</span>
+            <span>Publicar nota/foto/texto</span>
           </Link>
         </li>
         <li>
-          <Link href="/">
+          <Link href="/dev/invitar_colegas">
             <FontAwesomeIcon
               icon={faEnvelope}
               className="mr-2"
@@ -131,7 +131,7 @@ const AsideMenu = () => {
           </Link>
         </li>
         <li>
-          <Link href="/">
+          <Link href="/dev/promocion">
             <FontAwesomeIcon
               icon={faSackDollar}
               className="mr-2"

@@ -114,12 +114,11 @@ const Usuarios = () => {
     <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen max-w-[850px] mx-auto">
       <div className="flex flex-col">
         <div className="my-4 2xl:absolute 2xl:left-8 2xl:p-8 bg-white ">
+          <AsideMenu />
           <PatientsFilters
             tags={tags}
             setSelectedTags={setSelectedTags}
           />
-
-          <AsideMenu />
         </div>
 
         <div className="flex justify-between">
