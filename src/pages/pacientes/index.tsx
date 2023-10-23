@@ -24,6 +24,7 @@ const Usuarios = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [nameFilter, setNameFilter] = useState("");
   const [showArchived, setShowArchived] = useState(false);
+  const [filterByFavorites, setFilterByFavorites] = useState<boolean>(false);
 
   const fetchPatients = async () => {
     const response = await fetch("/api/pacientes", {
@@ -41,6 +42,25 @@ const Usuarios = () => {
     error,
     isLoading,
   } = useQuery(["pacientes"], fetchPatients);
+
+  const {
+    data: favorites,
+    isLoading: favoritesLoading,
+  }: { data: string[] | undefined; isLoading: boolean } = useQuery(
+    ["favorites"],
+    async () => {
+      if (!session) {
+        return [];
+      }
+      const response = await fetch(`/api/user/favorites`);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        throw new Error("Could not fetch favorites");
+      }
+    }
+  );
 
   if (status === "unauthenticated") {
     router.push("/login");
@@ -101,6 +121,12 @@ const Usuarios = () => {
         ? selectedTags.every((tag) => paciente.tags.includes(tag))
         : true;
     })
+    .filter((paciente: UserInterface) => {
+      // Handle favorites filtering
+      return filterByFavorites && favorites
+        ? favorites.includes(paciente._id)
+        : true;
+    })
     .sort((a: Patient, b: Patient) => {
       // If 'a' is archived and 'b' is not, 'a' comes last
       if (a.isArchived && !b.isArchived) return 1;
@@ -111,13 +137,15 @@ const Usuarios = () => {
     });
 
   return (
-    <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-screen max-w-[850px] mx-auto">
+    <div className="mt-4 bg-white p-6 rounded-lg shadow-md min-h-[130vh] max-w-[850px] mx-auto">
       <div className="flex flex-col">
         <div className="my-4 2xl:absolute 2xl:left-8 2xl:p-8 bg-white ">
           <AsideMenu />
           <PatientsFilters
             tags={tags}
             setSelectedTags={setSelectedTags}
+            filterByFavorites={filterByFavorites}
+            setFilterByFavorites={setFilterByFavorites}
           />
         </div>
 
@@ -160,6 +188,10 @@ const Usuarios = () => {
               key={idx}
               session={session}
               paciente={paciente}
+              favoritesLoading={favoritesLoading}
+              isFavorites={
+                Array.isArray(favorites) && favorites.includes(paciente._id)
+              }
             />
           );
         })}

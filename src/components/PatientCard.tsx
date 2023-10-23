@@ -13,6 +13,9 @@ import { CldImage } from "next-cloudinary";
 import { noProfileImage } from "@/utils/noProfileImage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Patient } from "@/types";
+import { toggleFavorite } from "@/utils/toggleFavorite";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 
 interface UserInterface {
   paciente: {
@@ -23,11 +26,15 @@ interface UserInterface {
     isArchived: boolean;
   };
   session: Session | null;
+  favoritesLoading: boolean;
+  isFavorites: boolean;
 }
 
 const PatientCard: FunctionComponent<UserInterface> = ({
   paciente,
   session,
+  favoritesLoading,
+  isFavorites,
 }) => {
   const queryClient = useQueryClient();
 
@@ -75,6 +82,27 @@ const PatientCard: FunctionComponent<UserInterface> = ({
     },
   });
 
+  const favoriteMutation = useMutation(toggleFavorite, {
+    onMutate: ({ _id, method }) => {
+      queryClient.cancelQueries(["favorites"]);
+      const previousFavorites =
+        queryClient.getQueryData<string[]>(["favorites"]) || [];
+
+      if (Array.isArray(previousFavorites)) {
+        if (method === "DELETE") {
+          queryClient.setQueryData(
+            ["favorites"],
+            previousFavorites.filter((fav) => fav !== _id)
+          );
+        } else {
+          queryClient.setQueryData(["favorites"], [...previousFavorites, _id]);
+        }
+      }
+
+      return { previousFavorites };
+    },
+  });
+
   return (
     <li
       key={paciente._id}
@@ -101,6 +129,26 @@ const PatientCard: FunctionComponent<UserInterface> = ({
         </Link>
 
         <div className="ml-auto flex gap-2">
+          <button
+            className={`${
+              favoritesLoading
+                ? "animate-pulse"
+                : isFavorites
+                ? "text-yellow-500 hover:text-black"
+                : "text-black hover:text-yellow-500"
+            } w-6`}
+            onClick={(e) => {
+              e.preventDefault();
+              const method = isFavorites ? "DELETE" : "POST";
+              favoriteMutation.mutate({ _id: paciente._id, method });
+            }}
+          >
+            <FontAwesomeIcon
+              size="lg"
+              icon={isFavorites ? faStar : farStar}
+            />
+          </button>
+
           {session?.user && (
             <button
               className="hover:text-green-500 transition"

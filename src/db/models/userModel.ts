@@ -32,6 +32,9 @@ export class User {
   @prop()
   photos?: string[];
 
+  @prop({ default: [] })
+  favorites?: string[];
+
   @prop()
   emailVerified?: Date | null;
 
