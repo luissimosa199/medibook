@@ -134,8 +134,8 @@ const PatientCard: FunctionComponent<UserInterface> = ({
               favoritesLoading
                 ? "animate-pulse"
                 : isFavorites
-                ? "text-yellow-500 hover:text-black"
-                : "text-black hover:text-yellow-500"
+                ? "text-yellow-500 sm:hover:text-black"
+                : "text-black active:text-yellow-500 sm:hover:text-yellow-500"
             } w-6`}
             onClick={(e) => {
               e.preventDefault();
