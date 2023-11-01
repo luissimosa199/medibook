@@ -12,6 +12,7 @@ app.prepare().then(() => {
 
   const httpServer = http.createServer(server);
   const io = socketIo(httpServer);
+  io.setMaxListeners(15);
 
   let allUsers = [];
   let roomMessages = {};
